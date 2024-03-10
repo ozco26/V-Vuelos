@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+ 
+        <div class="container">
+            <h1>Búsqueda de Vuelos</h1>
+            <form action="buscar_vuelos.php" method="get">
+                <label for="origen">Origen:</label>
+                <input type="text" id="origen" name="origen" placeholder="Origen">
+
+                <label for="destino">Destino:</label>
+                <input type="text" id="destino" name="destino" placeholder="Destino">
+
+                <label for="fecha_salida">Fecha de salida:</label>
+                <input type="date" id="fecha_salida" name="fecha_salida">
+
+                <label for="fecha_regreso">Fecha de regreso:</label>
+                <input type="date" id="fecha_regreso" name="fecha_regreso">
+
+                <input type="submit" value="Buscar Vuelos">
+            </form>
+        </div>
+
+</main>

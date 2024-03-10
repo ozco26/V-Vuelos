@@ -1,0 +1,141 @@
+﻿@using V_Vuelos.Models
+
+@{
+    // Obtener una instancia de UrlHelper
+    UrlHelper urlHelper = new UrlHelper(Request.RequestContext);
+
+    // Generar la ruta de la página actual
+    string currentPageUrl = urlHelper.Action(ViewContext.RouteData.Values["action"].ToString(),
+                                             ViewContext.RouteData.Values["controller"].ToString()).Replace("/",">");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - V-Vuelos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*@Styles.Render("~/Content/css")*@
+    <!--@Scripts.Render("~/bundles/modernizr")-->
+</head>
+<body>
+    <header>
+
+        <nav class="navbar navbar-expand-lg" style="background: #ffc107">
+            <div class="container-fluid">
+                <h1 class="navbar-brand" href="#">V-Vuelos</h1>
+            </div>
+        </nav>
+        <table>
+            <tr>
+                <td width="32%">
+                </td>
+                <td width="32%">
+                    <div class="container-fluid">
+                        <img width="731" src="~/Images/Airplane Wallpaper.jpg" height="325" />
+                    </div>
+                </td>
+                <td width="32%">
+                    <p>
+                        Bienvenido:
+                    </p>
+                    <p>
+                        @((Session["User"] as Usuario)?.Nombre_Usuario)
+                    </p>
+                    <form action="@Url.Action("LogOut", "Admin")" method="post">
+                        <button type="submit" class="btn btn-secondary">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+    </header>
+    <!--<nav class="navbar navbar ">
+    <div class="container">-->
+    @*@Html.ActionLink("V-Vuelos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+    <!--<!--<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>-->
+    <!--<div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        <h1>V-Vuelos</h1>
+
+
+        <li>@Html.ActionLink("Crear Cuenta", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Búsqueda de Vuelos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Reserva de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Compra de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Inicio de sesión", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Ingreso administración", "LoginAdministrativo", "AccesoAdministrativos", new { area = "" }, new { @class = "nav-link" })</li>-->
+    @*<li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
+    @*</ul>*@
+
+    <div style="bg-warning; padding: 4px">
+        <div style="background-color: #ffc107">
+            <p>La ruta de la página actual es: @currentPageUrl</p>
+
+        </div>
+    </div>
+
+    <div class="row" style="padding: 4px">
+        <div class="col-3 float" style="border-right:solid">
+            <div class="">
+                <ul>
+                    <li style="list-style-type:none">Seguridad</li>
+                    <ul>
+                        <li style="list-style-type:none"><a href=@Url.Action("VerUsuarios","Admin")>Usuarios</a></li>
+                        <ul>
+                            <li style="list-style-type:none">Crear</li>
+                            <li style="list-style-type:none">
+                                Asignar
+                                Roles
+                            </li>
+                        </ul>
+                        <li style="list-style-type:none">Cambiar Contraseña</li>
+                    </ul>
+                    <li style="list-style-type:none">Administración</li>
+                    <ul>
+                        <li style="list-style-type:none">Consecutivos</li>
+                        <li style="list-style-type:none">Paises</li>
+                        <li style="list-style-type:none">Aerolíneas</li>
+                        <li style="list-style-type:none">
+                            Puertas del
+                            Aeropuerto
+                        </li>
+                    </ul>
+                    <li style="list-style-type:none">Consultas</li>
+                    <ul>
+                        <li style="list-style-type:none">Bitácora</li>
+                        <li style="list-style-type:none">Errores</li>
+                        <li style="list-style-type:none">Descargas</li>
+                        <li style="list-style-type:none">
+                            Aerolíneas
+                        </li>
+                        <li style="list-style-type:none">Puertas</li>
+                    </ul>
+
+
+                </ul>
+            </div>
+        </div>
+        <div class="col">
+            <main role="main" class="pb-3 ">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 - V_Vuelos </p>
+    </footer>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿@model List<V_Vuelos.Models.Usuario>
+@{
+    ViewBag.Title = "Lista de Usuarios";
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+}
+
+
+
+<div class="row" style="text-align: right;padding: 4px">
+    <div class="col">
+        <h3>Lista de Usuarios</h3>
+        <select  onchange="maracrRoles()"; id="usuarioSelected" multiple >
+            @foreach (var usuario in Model)
+            {
+                <option value="@(usuario.Rol.ToString() +'-'+ @usuario.Id_Usuario.ToString())">
+                    @usuario.Nombre_Usuario - @usuario.Correo
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col" style="text-align:left" ; padding:1px>
+        <h3>Lista de Roles</h3>
+        <input type="checkbox" class="checkbox" id="adminCbx" /><label>Administrador</label> <br />
+        <input type="checkbox" class="checkbox" id="segCbx" /><label>Seguridad</label> <br />
+        <input type="checkbox" class="checkbox" id="ConsecutCbx" /><label>Consecutivo</label> <br />
+        <input type="checkbox" class="checkbox"id="MantCbx" /><label>Mantenimineto</label><br />
+        <input type="checkbox" class="checkbox" id="consultCbx" /><label>Consultas</label><br />
+        <button class="alert-danger" onclick="actualizarRoles()">Actualizar Roles</button>
+    </div>
+</div>
+
+<script>
+
+    //con esto se desmarcan las demás casillas
+    var checkboxes = document.querySelectorAll('.checkbox');
+
+    // Recorrer cada casilla de verificación
+    checkboxes.forEach(function (checkbox) {
+        // Agregar un evento 'change' a cada casilla de verificación
+        checkbox.addEventListener('change', function () {
+            // Si la casilla de verificación actual está marcada
+            if (this.checked) {
+                // Desmarcar todas las demás casillas de verificación
+                checkboxes.forEach(function (otherCheckbox) {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false;
+                    }
+                });
+            }
+        });
+    });
+
+    //Esta funcion recoge el rol para marcar los checkbox
+    function maracrRoles() {
+        reiniciarCheckbox();
+        var InfoUsuario = document.getElementById("usuarioSelected").value;
+        var index = InfoUsuario.indexOf(" - ");
+        var rolUsuario = InfoUsuario.substring(1, index);
+        switch (rolUsuario) {
+            case '1':
+                document.getElementById("adminCbx").checked = true;
+                break;
+            case '2':
+                document.getElementById("segCbx").checked = true;
+                break;
+            case '3':
+                document.getElementById("ConsecutCbx").checked = true;
+                break;
+            case '4':
+                document.getElementById("MantCbx").checked = true;
+                break;
+            case '5':
+                document.getElementById("consultCbx").checked = true;
+                break;
+            default:
+                break;
+        }       
+    }
+
+    // Esta función reinicia todos los checkboxes a su estado no marcado
+    function reiniciarCheckbox() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+    }
+
+    function actualizarRoles() {
+        // Obtener el ID del usuario seleccionado
+        var InfoUsuario = document.getElementById("usuarioSelected").value;
+        var index = InfoUsuario.indexOf("-");
+        var IdUsuarioSelec = InfoUsuario.substring(index + 1).trim();; 
+
+        // Obtener el rol seleccionado
+
+        if (document.getElementById("adminCbx").checked == true) {
+            roles = 1;
+        } else if (document.getElementById("segCbx").checked == true) {
+            roles = 2;
+        } else if (document.getElementById("ConsecutCbx").checked == true) {
+            roles = 3;
+        } else if (document.getElementById("MantCbx").checked == true) {
+            roles = 4;
+        } else if (document.getElementById("consultCbx").checked == true) {
+            roles = 5;
+        } else {
+            roles = 6;
+        }
+
+        var cuerpo = {
+            usuarioId: IdUsuarioSelec,
+            rol: roles
+        }
+
+        console.log(cuerpo);
+         // Realizar una solicitud al servidor para actualizar los roles en la base de datos
+        fetch('/Admin/ActualizarRoles', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cuerpo)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Roles actualizados correctamente.');
+                } else {
+                    alert('Error al actualizar los roles.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar los roles.');
+            });
+    }
+
+
+</script>
