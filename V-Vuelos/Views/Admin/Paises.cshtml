@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Paises";
+}
+
+<h2>Paises</h2>
+<div class="row" style="padding: 4px">
+    <div class="col" style="text-align:center; padding:5px">
+        <table class="table table-striped">
+            <tr>
+                <th>Código del país</th>
+                <th>Nombre del país</th>
+                <th>Imagen</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>AE-06</td>
+                <td>Costa Rica</td>
+                <td><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAB4CAMAAACATE3ZAAABjFBMVEX///8AFInaKRwPR6+JxeMHiTDjW1HrjYZQkWTpf3f+9/fbMSXjXVP0vbngTUKGn6yOp7PM2uL65OPT3eKnx9eVvdCjyduCrsS5zdbLmz318/DJvKPdOi6hhDT87Ou8nmCq1evG4/H53NqMaCrczrPaxZ3i1r+tgjOjbSrWo0CyklHkZFr2zMnunJZujp1Tc4JdgZJ/pLdwobmUssK1t6zvpJ7Byc3h5uiYhTZidix7eS5FbSlpgFmZnYiOim3Nu5hJb0CXmY6pqammu8Gtra3d18y4n265p4Sfn4WRkZHIq3PSy7iFZTSGs7yRyN2NwMaZuJy5z4mrzKJ1sa5Hh2XIsYPN0Vz53Q5dnH8tbkJenJlno6hwZlI3XptAcIgqZT95g5xWg3MtaVE7apCofDZCWIEbVaEWWCscWW47eXwub1AsW04VSaQKZCcFRxpxbUAxi1IslUlGp2WGv5HU6dk7ab7C0Op5mNJaYWysvd91e71JSJ6EenZmX2BWXXWVYykwSYGSXiV9WSZxWz0wLXPsAAADhklEQVR4nO2b6VPaQBiHU0EuxRMNBBUQhBWPVsULD7wSFSg9NFastrZNoa2iVVuqrQrqP95NsJ32G5uSYUPfZxhms+HD75nNbvYYmAc1AlPtAJUCRGgDRGgDRGgDRGgDRGgDRGgDRGgDRGgDRGiDAQAAAAAAAAAAAACATupqBBBpaLSazdbGhkqG+RdUigzYbaUn02YfqGwgtagSaRr8s5cNNlU6lBrUiFhtf48XNmvFY5GjQmRISe9sHsY0tyoXQ5UPRgq5iFmJ7njY3OJ0tjQ/ciiXZg2ikUEsYlKCt46w7Ojw8CjLjpTapFGLcCSQijS04dTtjtGOzrGWSKRlrLNj1NGOq9q6NIlXPqQi4zj0BOt0TnIxF8bNTTqd7ASuHNckXvkQinTJA9Ykx7k9U9PRqano9JTHzXGT8tBV5SYhFCmNWIy7e2Z2LjI/H5mbnel2MzT0d0KRHpyYi3miC4tLS8vyZ2VxIeqJcbi6R5uA5UImogxZvLC6tr7EGhU6ltfXVgVerjdpFLE8yESUd0icj6yMpbz3pMaWIny8+s8WmYgd50144kmjz+j1yQ3i9eJiMu5J4Bt2jSKWB5lIL84rCqL/cSqVeiKLOLAL6xeFGL7Rq03CMiETKc0WOf/TZ883NmUR/LXB+jmlurq9nUwExw30BcXk1out7fSOz7dh2TFuv0yKwb4AfpNoFLHMaGS/ZoKuUAjt7u29sqRf7++/sbx9ZznYRaGQK6grERsjShJC7w2ZzXQ2++GjJZ39ZMkeICRJoq4erV5GwB7+Q9weudxRNp0+OjrCRklsIuiqs9txiyB0/PmkXuYEU1+fy+WOsYioq+HXzARCWETRqD89+3J2qpTkFgno6oVoYrgwQihjwHzN51vz3+RSpoBQWF9TFDxpDEro5hynP7y4uMjnv//AxfMbJAX1NWmUJ1sBVEgW5Xa4vry8uj40GIq3BRSo9lRLzcKK998oJoZisSh7JG/8vO4WVspSlxMKt1eKCta4ui0IHAU7Qqo2H5iEFJLuzjOZ8ztckGe+TFu1N4FVbgfxUr/Lj3H1h3l9bgf92qDjQ/ckaFiw16naMrWWTAQhHBZKi1wKPP7rTezaOVaoq5mDHpkGk3z0Zqr2qPsbOAylDQYAAAAAAAAAAAAAADqp9h/qKwWI0AaI0AaI0AaI0AaI0AaI0AaI0AaI0AaI0EbNiPwEaI7SRCmCnr4AAAAASUVORK5CYII=" /></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col" style="text-align:left" ; padding:1px>
+        <h3>Crear nuevos Paices</h3>
+        <p>Código</p>
+        <input id="range" type="text" readonly> <br />
+        <p>Nombre del Pais</p>
+        <input id="name" type="text"><br /><br />
+        <input id="" type="text" readonly><br />
+        <button>Cargar imagen</button><br /> <br />
+        <button>Guardar</button>
+        <button>Limpiar</button><br />
+
+    </div>
+</div>

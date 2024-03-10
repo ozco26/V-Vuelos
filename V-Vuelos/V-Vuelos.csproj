@@ -254,6 +254,17 @@
     <Content Include="Views\Admin\Default.cshtml" />
     <Content Include="Views\Shared\_Layout_admin.cshtml" />
     <Content Include="Views\Admin\VerUsuarios.cshtml" />
+    <Content Include="Views\Admin\CrearUsuario.cshtml" />
+    <Content Include="Views\Admin\CambiarContrasenna.cshtml" />
+    <Content Include="Views\Admin\LstConsecutivos.cshtml" />
+    <Content Include="Views\Admin\EditConsecutivo.cshtml" />
+    <Content Include="Views\Admin\Paises.cshtml" />
+    <Content Include="Views\Admin\Aerolineas.cshtml" />
+    <Content Include="Views\Admin\AerolineasPorPais.cshtml" />
+    <Content Include="Views\Admin\Puertas.cshtml" />
+    <Content Include="Views\Admin\Bitacora.cshtml" />
+    <Content Include="Views\Admin\Errores.cshtml" />
+    <Content Include="Views\Admin\estadoPuertas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

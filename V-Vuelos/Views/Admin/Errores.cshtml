@@ -1,0 +1,79 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Errores";
+}
+
+<h2>Tabla de Errores</h2>
+
+<fieldset>
+    <legend>Filtrar información</legend>
+    <label for="fechaInicio">Fecha de inicio:</label>
+    <input type="date" id="fechaInicio">
+    <label for="fechaFin">Fecha de fin:</label>
+    <input type="date" id="fechaFin">
+    <button class="btn-danger">Buscar</button>
+</fieldset>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Fecha y Hora</th>
+            <th>Número de Error</th>
+            <th>Mensaje de Error</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2024-02-11 10:30:15</td>
+            <td>001</td>
+            <td>Error de conexión</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 11:45:22</td>
+            <td>002</td>
+            <td>Error de archivo no encontrado</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 13:20:57</td>
+            <td>003</td>
+            <td>Error de permisos</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 14:55:34</td>
+            <td>004</td>
+            <td>Error de servidor no disponible</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 16:10:08</td>
+            <td>005</td>
+            <td>Error de solicitud inválida</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 17:40:12</td>
+            <td>006</td>
+            <td>Error de base de datos</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 18:25:47</td>
+            <td>007</td>
+            <td>Error de tiempo de espera agotado</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 19:55:03</td>
+            <td>008</td>
+            <td>Error desconocido</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 20:30:19</td>
+            <td>009</td>
+            <td>Error de seguridad</td>
+        </tr>
+        <tr>
+            <td>2024-02-11 21:45:55</td>
+            <td>010</td>
+            <td>Error de configuración</td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Aerolineas Por Pais";
+}
+
+<h2>AerolineasPorPais</h2>
+
+<h2>Lista de Agencias</h2>
+
+
+<label for="filtroPais">Filtrar por país:</label>
+<select id="filtroPais">
+    <option value="">Selecciona un país</option>
+    <option value="Italia">Italia</option>
+    <option value="España">España</option>
+    <option value="Francia">Francia</option>
+
+</select>
+
+
+<table id="tablaAgencias" border="1" class="table table-striped">
+    <tbody id="cuerpoTabla">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>País</th>
+            <th>Imagen</th>
+        </tr>
+
+
+        <tr>
+            <td>001</td>
+            <td>Iberia</td>
+            <td>España</td>
+            <td>No found </td>
+        </tr>
+    </tbody>
+</table>

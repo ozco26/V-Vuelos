@@ -88,35 +88,35 @@
                 <ul>
                     <li style="list-style-type:none">Seguridad</li>
                     <ul>
-                        <li style="list-style-type:none"><a href=@Url.Action("VerUsuarios","Admin")>Usuarios</a></li>
+                        <li style="list-style-type:none">Usuarios</li>
                         <ul>
-                            <li style="list-style-type:none">Crear</li>
+                            <li style="list-style-type:none"><a href=@Url.Action("CrearUsuario","Admin")>Crear</a></li>
                             <li style="list-style-type:none">
-                                Asignar
-                                Roles
+                                <a href=@Url.Action("VerUsuarios","Admin")>Asignar Roles</a>
                             </li>
+                            <li style="list-style-type:none"><a href=@Url.Action("CambiarContrasenna","Admin")>Cambiar Contraseña</a></li>
                         </ul>
-                        <li style="list-style-type:none">Cambiar Contraseña</li>
+                        
                     </ul>
                     <li style="list-style-type:none">Administración</li>
                     <ul>
-                        <li style="list-style-type:none">Consecutivos</li>
-                        <li style="list-style-type:none">Paises</li>
-                        <li style="list-style-type:none">Aerolíneas</li>
-                        <li style="list-style-type:none">
-                            Puertas del
-                            Aeropuerto
-                        </li>
+                        <li style="list-style-type:none"><a href=@Url.Action("LstConsecutivos","Admin")>Consecutivos</a></li>
+                        <li style="list-style-type:none"><a href=@Url.Action("Paises","Admin")>Paises</a></li>
+                        <li style="list-style-type:none"><a href=@Url.Action("Aerolineas","Admin")>Aerolíneas</a></li>
+                        <li style="list-style-type:none"><a href=@Url.Action("estadoPuertas","Admin")>
+    Puertas del
+    Aeropuerto
+</a>
+</li>
                     </ul>
                     <li style="list-style-type:none">Consultas</li>
                     <ul>
-                        <li style="list-style-type:none">Bitácora</li>
-                        <li style="list-style-type:none">Errores</li>
-                        <li style="list-style-type:none">Descargas</li>
-                        <li style="list-style-type:none">
-                            Aerolíneas
-                        </li>
-                        <li style="list-style-type:none">Puertas</li>
+                        <li style="list-style-type:none"><a href=@Url.Action("Bitacora","Admin")>Bitácora</a></li>
+                        <li style="list-style-type:none"><a href=@Url.Action("Errores","Admin")>Errores</a></li>
+                        @*<li style="list-style-type:none"><a href=@Url.Action("CambiarContrasenna","Admin")>Descargas</a></li>*@
+                        <li style="list-style-type:none"><a href=@Url.Action("AerolineasPorPais","Admin")>Aerolíneas Por Pais</a>
+</li>
+                        <li style="list-style-type:none"><a href=@Url.Action("estadoPuertas","Admin")>Puertas</a></li>
                     </ul>
 
 

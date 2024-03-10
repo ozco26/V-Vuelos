@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "CrearUsuario";
+}
+
+<h2>Crear Usuario</h2>
+<div style="text-align:center">
+    <form>
+        <h3>Crear una Nueva cuenta</h3>
+        <div class="row" style="padding: 4px">
+            <div class="col" style="text-align:right; padding:1px">
+                <label for="username">Usuario:</label><br />
+                <label for="password">Contraseña:</label><br />
+                <label for="passwordConf">Confirmar Contraseña:</label><br />
+                <label for="email">Contraseña:</label><br />
+                <label for="segQuest">Pregunta de seguridad:</label><br />
+                <label for="ansQuest">Respuesta de seguridad:</label><br />
+
+
+            </div>
+            <div class="col" style="text-align:left" ; padding:1px>
+                <input type="text" id="username" name="username" required><br />
+                <input type="password" id="password" name="password" required><br />
+                <input type="password" id="passwordConf" name="passwordConf" required><br />
+                <input type="email" id="email" name="email" required><br />
+                <input type="text" id="segQuest" name="segQuest" required><br />
+                <button>Crear</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Aerolineas";
+}
+
+<h2>Aerolineas</h2>
+<div class="row" style="padding: 4px">
+    <div class="col" style="text-align:center; padding:5px">
+        <table class="table table-striped">
+            <tr>
+                <th>Código de la Aerolinea</th>
+                <th>Nombre de Aerlinea</th>
+                <th>Imagen</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>AL-015</td>
+                <td>Iberia</td>
+                <td><img src="data:image/png;base64,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" /></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col" style="text-align:left" ; padding:1px>
+        <h3>Crear nuevas aerolinea</h3>
+        <p>Código</p>
+        <input id="range" type="text" readonly> <br />
+        <p>Nombre de aerolinea</p>
+        <input id="name" type="text"><br /><br />
+        <input id="" type="text" readonly><br />
+        <button>Cargar imagen</button><br /> <br />
+        <button>Guardar</button>
+        <button>Limpiar</button><br />
+
+    </div>
+</div>

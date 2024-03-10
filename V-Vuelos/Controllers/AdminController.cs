@@ -18,14 +18,14 @@ namespace V_Vuelos.Controllers
         {
             _context = new V_vuelos_ProyectoEntities(); // ApplicationDbContext es tu contexto de base de datos
         }
-
-        // GET: Admin
+       
         //Visualiza la pantalla Bienvenidos
         [AuthorizeUser(idOperation:1)]
         public ActionResult Default()
         {
             return View();
         }
+
         //Metoto cerrar sesion
         public ActionResult LogOut()
         {
@@ -61,6 +61,57 @@ namespace V_Vuelos.Controllers
             }
         }
 
-    }
+        public ActionResult CrearUsuario()
+        {
+            return View();
+        }
 
+        public ActionResult CambiarContrasenna()
+        {
+            return View();
+        }
+
+        public ActionResult LstConsecutivos()
+        {
+            return View();
+        }
+        public ActionResult EditConsecutivo()
+        {
+            return View();
+        }
+
+        public ActionResult Paises()
+        {
+            return View();
+        }
+
+        public ActionResult Aerolineas()
+        {
+            return View();
+        }
+
+        public ActionResult Puertas()
+        {
+            return View();
+        }
+        public ActionResult Bitacora()
+        {
+            return View();
+        }
+
+        public ActionResult Errores()
+        {
+            return View();
+        }
+
+        public ActionResult AerolineasPorPais()
+        {
+            return View();
+        }
+        public ActionResult estadoPuertas()
+        {
+            return View();
+        }
+    }
 }
+

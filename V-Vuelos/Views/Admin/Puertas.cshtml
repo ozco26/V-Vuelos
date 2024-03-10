@@ -1,0 +1,39 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Puertas";
+}
+
+<h2>Puertas</h2>
+
+
+<div class="row" style="padding: 4px">
+    <div class="col" style="text-align:center; padding:5px">
+        <table class="table table-striped">
+            <tr>
+                <th>Código de la puerta</th>
+                <th>Número de la puerta</th>
+                <th>Detalle</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>CP-05</td>
+                <td>5</td>
+                <td>Puera número 5
+            </tr>
+        </table>
+    </div>
+    <div class="col" style="text-align:left" ; padding:1px>
+        <h3>Crear nueva puerta</h3>
+        <p>Código</p>
+        <input id="inpCodPuerta" type="text" readonly> <br />
+        <p>Número del puerta</p>
+        <input id="inpNumber" type="text"><br />
+        <p>Detalle</p>
+        <input id="inpDetalle" type="text"><br /><br />
+        <button>Guardar</button>
+        <button>Limpiar</button><br />
+
+    </div>
+</div>

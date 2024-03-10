@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_admin.cshtml";
+
+    ViewBag.Title = "Editar Consecutivo";
+}
+
+<h2>Editar Consecutivo</h2>
+<h3>Información del Consecutivo</h3>
+
+<div style="text-align:left">
+    <form>
+        <table class="table table-striped" style="text-align:left">
+
+            <tr>
+                <td>Descripción</td>
+                <td>
+                    <select id="description">
+                        <option value="paises">Países</option>
+                        <option value="verde">Aerolíneas</option>
+                        <option value="puertas">Puertas del Aeropuerto</option>
+                        <option value="compras">Compras de Boletos</option>
+                        <option value="reservaciones">Reservaciones de Boletos</option>
+                        <option value="vuelos">Vuelos</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Consecutivo</td>
+                <td>
+                    <input id="consecutive" type="number">
+                </td>
+            </tr>
+            <tr>
+                <td>Posee Prefijo</td>
+                <td>
+                    <input type="checkbox" id="ckbPref" name="ckbPref">
+                    <label for="ckbPref">Sí</label><br>
+                </td>
+            </tr>
+            <tr>
+                <td>Prefijo</td>
+                <td>
+                    <input id="inpPref" type="text">
+                </td>
+            </tr>
+            <tr>
+                <td>Posee Rango</td>
+                <td>
+                    <input type="checkbox" id="ckbRang" name="ckbRang">
+                    <label for="ckbRang">Sí</label><br>
+                </td>
+            </tr>
+            <tr>
+                <td>Rango Inicial</td>
+                <td>
+                    <input id="inpRangInit" type="text">
+                </td>
+            </tr>
+            <tr>
+                <td>Rango Final</td>
+                <td>
+                    <input id="inpRangEnd" type="text">
+                </td>
+            </tr>
+
+        </table>
+        <button>Aceptar</button>
+        <button>Cancelar</button>
+    </form>
+</div>
