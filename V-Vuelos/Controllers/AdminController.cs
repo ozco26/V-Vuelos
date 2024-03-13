@@ -18,6 +18,7 @@ namespace V_Vuelos.Controllers
         public AdminController() => _context = new V_vuelos_ProyectoEntities(); // ApplicationDbContext es tu contexto de base de datos
 
         //Visualiza la pantalla Bienvenidos
+
         [AuthorizeUser(idOperation: 1)]
         public ActionResult Default()
         {
@@ -32,6 +33,7 @@ namespace V_Vuelos.Controllers
 
         }
 
+        //Metodo cargar pagina lsitando usuarios
         [AuthorizeUser(idOperation: 2)]
         public ActionResult VerUsuarios()
         {
@@ -39,6 +41,8 @@ namespace V_Vuelos.Controllers
             return View(usuarios);
         }
 
+
+        //Metodo dentro de ver usuarios, para cambiar rol en BD
         [AuthorizeUser(idOperation: 2)]
         [HttpPost]
         public ActionResult ActualizarRoles(int usuarioId, int rol)
@@ -59,12 +63,16 @@ namespace V_Vuelos.Controllers
             }
         }
 
+
+        //carga pagina de crear usuario 
         [AuthorizeUser(idOperation: 2)]
         public ActionResult CrearUsuario()
         {
             return View();
         }
 
+
+        //verifica la contraseña con la que el usuario introdujo para despues cargar en BD
         [AuthorizeUser(idOperation: 2)]
         [HttpPost]
         public ActionResult CrearUsuarioNuevo(Usuario nuevoUsuario)
@@ -100,12 +108,14 @@ namespace V_Vuelos.Controllers
             }
         }
 
+        //vista de CAmbiar Contraseña
         [AuthorizeUser(idOperation: 1)]
         public ActionResult CambiarContrasenna()
         {
             return View();
         }
 
+        //busca el usuario, comprueba password con BD y guarda en BD
         [AuthorizeUser(idOperation: 1)]
         public ActionResult GeneraCambioContrasenna(string Nombre_Usuario, string ContraseniaAnterior, string ContraseniaActual)
         {
@@ -118,7 +128,7 @@ namespace V_Vuelos.Controllers
                     if (usuarioExistente.Contrasenia == ContraseniaAnterior)
                     {
                         usuarioExistente.Contrasenia = ContraseniaActual;
-                        
+
                         _context.SaveChanges();
                         // El password es igual, se cambia
                         return Json(new { success = true, message = "La contraseña ha sido cambiada correctamente." });
@@ -150,7 +160,80 @@ namespace V_Vuelos.Controllers
             {
                 var errorMessages = ex.InnerException;
                 var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", errorMessages);
-                
+
+                return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
+            }
+        }
+
+        [AuthorizeUser(idOperation: 3)]
+        public ActionResult LstConsecutivos()
+        {
+            var model = _context.Consecutivos
+                       .GroupBy(c => c.Descripcion)
+                       .Select(g => g.OrderByDescending(c => c.Codigo).FirstOrDefault())
+                       .ToList();
+
+            return View(model);
+        }
+
+        [AuthorizeUser(idOperation: 3)]
+        public ActionResult EditConsecutivo(int id)
+        {
+            var consecutivo = _context.Consecutivos.FirstOrDefault(c => c.Codigo == id);
+            if (consecutivo == null)
+            {
+                // Manejar el caso donde el consecutivo no existe, por ejemplo, mostrar un mensaje de error o redirigir a otra página
+                return RedirectToAction("LstConsecutivos", "Admin"); // Redireccionar a la página principal
+            }
+            return View(consecutivo);
+        }
+
+        [AuthorizeUser(idOperation: 3)]
+        [HttpPost]
+        public ActionResult EditaLineaConsecutivo(string Descripcion, bool PoseePrefijo, string Prefijo, int Consecutivo1, bool PoseeRango, int RangoInicial, int RangoFinal)
+        {
+            try
+            {
+                var descripcionBD = _context.Consecutivos.FirstOrDefault(d => d.Descripcion == Descripcion);
+                if (descripcionBD != null)
+                {
+                    descripcionBD.PoseePrefijo = PoseePrefijo;
+                    descripcionBD.Prefijo = Prefijo;
+                    descripcionBD.Consecutivo1 = Consecutivo1;
+                    descripcionBD.PoseeRango = PoseeRango;
+                    descripcionBD.RangoInicial = RangoInicial;
+                    descripcionBD.RangoFinal = RangoFinal;
+
+                    _context.SaveChanges();
+                    // El password es igual, se cambia
+                    return Json(new { success = true, message = "La tabla Consecutivo ha sido Modificada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "La Descripcion actual no coincide con las registrada, vuelva a intentar." });
+                }
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Manejar errores de validación del modelo
+                var errorMessages = ex.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => x.ErrorMessage);
+
+                var fullErrorMessage = string.Join("; ", errorMessages);
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                return Json(new
+                {
+                    success = false,
+                    message = exceptionMessage
+                });
+            }
+            catch (Exception ex)
+            {
+                var errorMessages = ex.InnerException;
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", errorMessages);
+
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
@@ -158,49 +241,40 @@ namespace V_Vuelos.Controllers
 
 
 
+    
 
-
-        public ActionResult LstConsecutivos()
-        {
-            return View();
-        }
-        public ActionResult EditConsecutivo()
-        {
-            return View();
-        }
-
-        public ActionResult Paises()
-        {
-            return View();
-        }
-
-        public ActionResult Aerolineas()
-        {
-            return View();
-        }
-
-        public ActionResult Puertas()
-        {
-            return View();
-        }
-        public ActionResult Bitacora()
-        {
-            return View();
-        }
-
-        public ActionResult Errores()
-        {
-            return View();
-        }
-
-        public ActionResult AerolineasPorPais()
-        {
-            return View();
-        }
-        public ActionResult EstadoPuertas()
-        {
-            return View();
-        }
+    public ActionResult Paises()
+    {
+        return View();
     }
+
+    public ActionResult Aerolineas()
+    {
+        return View();
+    }
+
+    public ActionResult Puertas()
+    {
+        return View();
+    }
+    public ActionResult Bitacora()
+    {
+        return View();
+    }
+
+    public ActionResult Errores()
+    {
+        return View();
+    }
+
+    public ActionResult AerolineasPorPais()
+    {
+        return View();
+    }
+    public ActionResult EstadoPuertas()
+    {
+        return View();
+    }
+}
 }
 
