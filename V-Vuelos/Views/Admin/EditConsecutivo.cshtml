@@ -15,9 +15,9 @@
             <tr>
                 <td>Descripción</td>
                 <td>
-                    <select id="description">
+                    <select id="description" disabled>
                         <option value="paises">Países</option>
-                        <option value="verde">Aerolíneas</option>
+                        <option value="aerolineas">Aerolíneas</option>
                         <option value="puertas">Puertas del Aeropuerto</option>
                         <option value="compras">Compras de Boletos</option>
                         <option value="reservaciones">Reservaciones de Boletos</option>
@@ -28,44 +28,167 @@
             <tr>
                 <td>Consecutivo</td>
                 <td>
-                    <input id="consecutive" type="number">
+                    <input id="consecutive" type="text" value="@(Model.Consecutivo1)"> @*pulga dado que no puedo filtrar por nuemros ******************************************************@
                 </td>
             </tr>
             <tr>
                 <td>Posee Prefijo</td>
                 <td>
-                    <input type="checkbox" id="ckbPref" name="ckbPref">
+                    <input type="checkbox" id="ckbPref" name="ckbPref" value="false" onclick="PrefijoCkbx()">
                     <label for="ckbPref">Sí</label><br>
                 </td>
             </tr>
             <tr>
                 <td>Prefijo</td>
                 <td>
-                    <input id="inpPref" type="text">
+                    <input id="inpPref" name="inpPref" type="text" value="" disabled>
                 </td>
             </tr>
             <tr>
                 <td>Posee Rango</td>
                 <td>
-                    <input type="checkbox" id="ckbRang" name="ckbRang">
+                    <input type="checkbox" id="ckbRang" name="ckbRang" value="false" onclick="ConsecutCkbx()">
                     <label for="ckbRang">Sí</label><br>
                 </td>
             </tr>
             <tr>
                 <td>Rango Inicial</td>
                 <td>
-                    <input id="inpRangInit" type="text">
+                    <input id="inpRangInit" type="number" value="@Model.RangoInicial">
                 </td>
             </tr>
             <tr>
                 <td>Rango Final</td>
                 <td>
-                    <input id="inpRangEnd" type="text">
+                    <input id="inpRangEnd" type="number" onblur="EsMayor()" disabled>
                 </td>
             </tr>
 
         </table>
-        <button>Aceptar</button>
-        <button>Cancelar</button>
+        <button type="button" onclick="Aceptar()">Aceptar</button>
+        <button type="button" onclick="Cancelar()">Cancelar</button>
     </form>
 </div>
+<script>
+
+    //selecciono la descripción que estoy editando
+    var selectElement = document.getElementById("description");
+    selectElement.value = "@Model.Descripcion";
+
+
+
+    //bloqueo o desbloqueo los campos segun checbox de prefijo
+    function PrefijoCkbx() {
+        var ckbPref = document.getElementById("ckbPref");
+        var inpPref = document.getElementById("inpPref");
+        if (!ckbPref.checked) {
+            inpPref.disabled = true;
+            inpPref.value = "";
+
+        } else {
+            inpPref.disabled = false;
+            inpPref.value = "@Model.Prefijo";
+        }
+    }
+
+        function ConsecutCkbx() {
+            var ckbRang = document.getElementById("ckbRang");
+            var inpRangEnd = document.getElementById("inpRangEnd");
+            if (!ckbRang.checked) {
+                inpRangEnd.disabled = true;
+                inpRangEnd.value = "";
+
+            } else {
+                inpRangEnd.disabled = false;
+                inpRangEnd.value = "@Model.RangoFinal"
+            }
+    }
+
+    function EsMayor() {
+        var inpRangInit = document.getElementById("inpRangInit");
+        var inpRangEnd = document.getElementById("inpRangEnd");
+        if (inpRangInit.value >= inpRangEnd.value) {
+            inpRangEnd.value = "";
+            inpRangEnd.focus();
+            alert("El rango final debe de ser mayor que el inicial");
+        }
+    }
+
+    function Cancelar() {
+        var consecutive = document.getElementById("consecutive");
+        var ckbPref = document.getElementById("ckbPref");
+        var inpRangInit = document.getElementById("inpRangInit");
+        var inpRangEnd = document.getElementById("inpRangEnd");
+        var ckbRang = document.getElementById("ckbRang");
+        var inpPref = document.getElementById("inpPref");
+
+        inpPref.value = "";
+        consecutive.value = "@Model.Consecutivo1";
+        ckbRang.checked = false;
+        ckbPref.checked = false;
+        inpRangInit.value = "@Model.RangoInicial";
+        inpRangEnd.value = "";
+        consecutive.focus();
+    }
+
+    async function Aceptar() {
+        var consecutive = parseInt(document.getElementById("consecutive").value);
+        var inpRangInit = document.getElementById("inpRangInit").value;
+        var inpRangEnd = document.getElementById("inpRangEnd").value;
+        var inpPref = document.getElementById("inpPref");
+        var ckbRang = document.getElementById("ckbRang");
+        var select = document.getElementById("description").value;
+        var ckbPref = document.getElementById("ckbPref").checked;
+
+        if (!ckbRang.checked) {
+            if (inpRangInit > consecutive) {
+                return alert("El consecutivo debe de ser mayor al rango final")
+            }
+        }
+        if (ckbRang.checked) {
+            if (inpRangInit > consecutive || consecutive > inpRangEnd) {
+                return alert("El consecutivo debe de estar entre el rango inicial y el final")
+            }
+        }
+        
+        var cuerpo = {
+
+            Descripcion: select,
+            PoseePrefijo: ckbPref,
+            Prefijo: inpPref.value,
+            Consecutivo1: consecutive,
+            PoseeRango: ckbRang.checked,
+            RangoInicial: inpRangInit,
+            RangoFinal: inpRangEnd
+
+        };
+
+        console.log(cuerpo);
+
+        try {
+            const response = await fetch('/Admin/EditaLineaConsecutivo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cuerpo)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:' + error);
+            alert('Error al crear usuario');
+        }
+
+    }
+
+
+
+
+</script>

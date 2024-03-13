@@ -11,20 +11,20 @@
         <table style="border-collapse: collapse; margin: 0 auto;">
             <tr>
                 <td style="text-align: right;"><label for="password">Contraseña Actual:</label></td>
-                <td style="text-align: left;"><input type="password" id="password" name="password" required></td>
+                <td style="text-align: left;"><input type="password" id="password" name="password" ></td>
             </tr>
             <tr>
                 <td style="text-align: right;"><label for="passwordChang">Nueva Contraseña:</label></td>
-                <td style="text-align: left;"><input type="password" id="passwordChang" name="passwordChang" required></td>
+                <td style="text-align: left;"><input type="password" id="passwordChang" name="passwordChang" ></td>
             </tr>
             <tr>
                 <td style="text-align: right;"><label for="passwordConf">Confirmar Contraseña:</label></td>
-                <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf" required></td>
+                <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf" ></td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
                     <button class="btn btn-primary" type="button" onclick="GeneraCambioContrasena()">Cambiar Contraseña</button>
-                    <button class="btn btn-dark">Cancelar</button>
+                    <button class="btn btn-dark" type="button" onclick="Cancelar()">Cancelar</button>
                 </td>
             </tr>
         </table>
@@ -76,6 +76,17 @@
             console.error('Error:' + error);
            
         }
+    }
+    function Cancelar() {
+        var password = document.getElementById("password");
+        var passwordChang = document.getElementById("passwordChang");
+        var passwordConf = document.getElementById("passwordConf");
+
+        password.value = "";
+        passwordChang.value = "";
+        passwordConf.value = "";
+
+        password.focus();
     }
 
 

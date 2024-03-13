@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
-    ViewBag.Title = "LstConsecutivos";
+    ViewBag.Title = "LstConsecutivos"; 
 }
 
 <h2>Lista de Consecutivos</h2>
@@ -12,44 +12,16 @@
         <th>Código</th>
         <th>Descripción</th>
         <th>Consecutivo</th>
-        <th></th>
+        <th>Editar</th>
     </tr>
-    <tr>
-        <td>1</td>
-        <td>Países.</td>
-        <td>1</td>
-        <td><a href="#">Editar</a></td>
-
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Aerolíneas.</td>
-        <td>2</td>
-        <td><a href="#">Editar</a></td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>Puertas del Aeropuerto</td>
-        <td>2</td>
-        <td><a href="#">Editar</td>
-    </tr>
-    <tr>
-        <td>4</td>
-        <td>Compras de Boletos</td>
-        <td>2</td>
-        <td><a href="#">Editar</a></td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td>Reservaciones de Boletos</td>
-        <td>2</td>
-        <td><a href="#">Editar</a></td>
-    </tr>
-    <tr>
-        <td>6</td>
-        <td>Vuelos.</td>
-        <td>2</td>
-        <td><a href="#">Editar</a></td>
-    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Prefijo</td>
+            <td>@item.Descripcion</td>
+            <td>@item.Consecutivo1</td>
+            <td><a href="@Url.Action("EditConsecutivo", "Admin", new { id = item.Codigo })">Editar</a></td>
+        </tr>
+    }
 
 </table>
