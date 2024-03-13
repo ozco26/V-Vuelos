@@ -15,9 +15,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - V-Vuelos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    @*@Styles.Render("~/Content/css")*@
-    <!--@Scripts.Render("~/bundles/modernizr")-->
+   
+    
 </head>
 <body>
     <header>
@@ -53,29 +52,9 @@
         </table>
 
     </header>
-    <!--<nav class="navbar navbar ">
-    <div class="container">-->
-    @*@Html.ActionLink("V-Vuelos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
-    <!--<!--<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-            aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>-->
-    <!--<div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <h1>V-Vuelos</h1>
+   
 
-
-        <li>@Html.ActionLink("Crear Cuenta", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Búsqueda de Vuelos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Reserva de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Compra de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Inicio de sesión", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Ingreso administración", "LoginAdministrativo", "AccesoAdministrativos", new { area = "" }, new { @class = "nav-link" })</li>-->
-    @*<li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-        <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-    @*</ul>*@
-
-    <div style="bg-warning; padding: 4px">
+    <div style="padding: 4px">
         <div style="background-color: #ffc107">
             <p>La ruta de la página actual es: @currentPageUrl</p>
 
@@ -113,9 +92,7 @@
                     <ul>
                         <li style="list-style-type:none"><a href=@Url.Action("Bitacora","Admin")>Bitácora</a></li>
                         <li style="list-style-type:none"><a href=@Url.Action("Errores","Admin")>Errores</a></li>
-                        @*<li style="list-style-type:none"><a href=@Url.Action("CambiarContrasenna","Admin")>Descargas</a></li>*@
-                        <li style="list-style-type:none"><a href=@Url.Action("AerolineasPorPais","Admin")>Aerolíneas Por Pais</a>
-</li>
+                       <li style="list-style-type:none"><a href=@Url.Action("AerolineasPorPais","Admin")>Aerolíneas Por Pais</a></li>
                         <li style="list-style-type:none"><a href=@Url.Action("estadoPuertas","Admin")>Puertas</a></li>
                     </ul>
 
