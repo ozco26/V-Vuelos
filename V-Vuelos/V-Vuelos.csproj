@@ -264,7 +264,7 @@
     <Content Include="Views\Admin\Puertas.cshtml" />
     <Content Include="Views\Admin\Bitacora.cshtml" />
     <Content Include="Views\Admin\Errores.cshtml" />
-    <Content Include="Views\Admin\estadoPuertas.cshtml" />
+    <Content Include="Views\Admin\EstadoPuertas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

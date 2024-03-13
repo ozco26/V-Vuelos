@@ -9,25 +9,89 @@
 <div style="text-align:center">
     <form>
         <h3>Crear una Nueva cuenta</h3>
-        <div class="row" style="padding: 4px">
-            <div class="col" style="text-align:right; padding:1px">
-                <label for="username">Usuario:</label><br />
-                <label for="password">Contraseña:</label><br />
-                <label for="passwordConf">Confirmar Contraseña:</label><br />
-                <label for="email">Contraseña:</label><br />
-                <label for="segQuest">Pregunta de seguridad:</label><br />
-                <label for="ansQuest">Respuesta de seguridad:</label><br />
-
-
-            </div>
-            <div class="col" style="text-align:left" ; padding:1px>
-                <input type="text" id="username" name="username" required><br />
-                <input type="password" id="password" name="password" required><br />
-                <input type="password" id="passwordConf" name="passwordConf" required><br />
-                <input type="email" id="email" name="email" required><br />
-                <input type="text" id="segQuest" name="segQuest" required><br />
-                <button>Crear</button>
-            </div>
-        </div>
+        <table style="border-collapse: collapse; margin: 0 auto;">
+            <tr>
+                <td style="text-align: right;"><label for="username">Usuario:</label></td>
+                <td style="text-align: left;"><input type="text" id="username" name="username"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="password">Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="password" name="password"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="passwordConf">Confirmar Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="email">Correo Electronico:</label></td>
+                <td style="text-align: left;"><input type="email" id="email" name="email"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="segQuest">Pregunta de seguridad:</label></td>
+                <td style="text-align: left;"><input type="text" id="segQuest" name="segQuest"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="ansQuest">Respuesta de seguridad:</label></td>
+                <td style="text-align: left;"><input type="text" id="ansQuest" name="ansQuest"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;"><button class="btn btn-primary" type="button" onclick="CrearUsuario_nuevo()">Crear</button></td>
+            </tr>
+        </table>
     </form>
 </div>
+
+
+
+
+<script>
+    async function CrearUsuario_nuevo() {
+        try {
+           
+            var username = document.getElementById("username").value.trim();
+            var password = document.getElementById("password").value.trim();
+            var passwordConf = document.getElementById("passwordConf").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var segQuest = document.getElementById("segQuest").value.trim();
+            var ansQuest = document.getElementById("ansQuest").value.trim();
+
+            // Verificar campos llenos
+            if (username === "" || password === "" || passwordConf === "" || email === "" || segQuest === "") {
+                return alert("Todos los campos deben estar llenos");
+            }
+            // Verificar coincidencia de contraseñas
+            if (password !== passwordConf) {
+                return alert("La contraseña no coincide con la confirmación");
+
+            }
+            var cuerpo1 = {
+                Nombre_Usuario: username,
+                Rol: 6,
+                Correo: email,
+                Contrasenia: password,
+                PreguntaSeguridad: segQuest,
+                RespuestaSeguridad: ansQuest,
+            };
+            console.log(cuerpo1);
+
+            const response = await fetch('/Admin/CrearUsuarioNuevo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cuerpo1)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:' + error);
+            alert('Error al crear usuario');
+        }
+    }
+    </script>

@@ -1,34 +1,85 @@
-﻿
+﻿@using V_Vuelos.Models
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
     ViewBag.Title = "Cambiar Contraseña";
 }
 
-<h2>Cambiar Contraseña</h2>
+<h2>Cambiar Contraseña :  @((Session["User"] as Usuario)?.Nombre_Usuario)</h2>
 <div style="text-align:center">
     <form>
-
-        <div class="row" style="padding: 4px">
-            <div class="col" style="text-align:right; padding:1px">
-
-                <label for="password">Contraeña:</label><br />
-                <label for="passwordChang">Nueva Contraseña:</label><br />
-                <label for="passwordConf">Confirmar Contraseña:</label>
-
-            </div>
-            <div class="col" style="text-align:left" ; padding:1px>
-                <input type="password" id="password" name="password" required><br />
-                <input type="password" id="passwordChang" name="passwordChang" required><br />
-                <input type="password" id="passwordConf" name="passwordConf" required>
-            </div>
-            <div class="row" style="display: flex; justify-content: center;">
-                <div class="col-2">
-                    <button class="btn btn-primary">Cambiar Contraseña</button>
-                </div>
-                <div class="col-2">
+        <table style="border-collapse: collapse; margin: 0 auto;">
+            <tr>
+                <td style="text-align: right;"><label for="password">Contraseña Actual:</label></td>
+                <td style="text-align: left;"><input type="password" id="password" name="password" required></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="passwordChang">Nueva Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="passwordChang" name="passwordChang" required></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="passwordConf">Confirmar Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <button class="btn btn-primary" type="button" onclick="GeneraCambioContrasena()">Cambiar Contraseña</button>
                     <button class="btn btn-dark">Cancelar</button>
-                </div>
-            </div>
+                </td>
+            </tr>
+        </table>
     </form>
 </div>
+
+<input type="text" id="usuario" name="usuario" value="@((Session["User"] as Usuario)?.Nombre_Usuario)" hidden>
+
+<script>
+    async  function GeneraCambioContrasena() {
+        try {
+            var password = document.getElementById("password").value.trim();
+            var passwordChang = document.getElementById("passwordChang").value.trim();
+            var passwordConf = document.getElementById("passwordConf").value.trim();
+            var user = document.getElementById("usuario").value;
+
+            if (password == "" || passwordChang == "" || passwordConf == "") {
+                return alert("Debe de rellenar todos los campos");
+            }
+            if (passwordChang != passwordConf) {
+                return alert("Las contreaseñas no coinsiden");
+            }
+            if (password == passwordChang) {
+                return alert("La contraseña nueva debe de ser diferente a la actual")
+            }
+
+            var cuerpo = {
+                Nombre_Usuario: user,
+                ContraseniaAnterior: password,
+                ContraseniaActual: passwordConf
+            }
+            console.log(cuerpo);
+            const response = await fetch('/Admin/GeneraCambioContrasenna', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cuerpo)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:' + error);
+           
+        }
+    }
+
+
+
+
+
+</script>
