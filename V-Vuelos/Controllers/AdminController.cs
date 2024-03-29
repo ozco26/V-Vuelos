@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -242,58 +243,43 @@ namespace V_Vuelos.Controllers
 
 
         [HttpPost]
-        public ActionResult GuardarImagen(HttpPostedFileBase imagen, string codigoPais, string nombrePais)
+        public ActionResult GuardarImagen(Pai nuevoPais)
         {
+
             try
             {
-                if (imagen != null && imagen.ContentLength > 0)
+                // Verifica si el nombre de usuario ya está en uso
+                var usuarioExistente = _context.Pais.FirstOrDefault(u => u.NombrePais == nuevoPais.NombrePais);
+                if (usuarioExistente != null)
                 {
-                    // Verificar si el archivo es una imagen
-                    if (imagen.ContentType.ToLower().StartsWith("image/"))
-                    {
-                        // Convertir la imagen a bytes
-                        byte[] imageData = null;
-                        using (var binaryReader = new BinaryReader(imagen.InputStream))
-                        {
-                            imageData = binaryReader.ReadBytes(imagen.ContentLength);
-                        }
-
-                        // Crear un nuevo objeto de tipo Pais para almacenar en la base de datos
-                        Pai nuevoPais = new Pai
-                        {
-                            CodigoPais = codigoPais,
-                            NombrePais = nombrePais,
-                            Imagen = Convert.ToBase64String(imageData) // Convertir los bytes de la imagen a una cadena Base64 y guardarla en la propiedad Imagen
-                        };
-
-                        // Agregar el nuevo país a la base de datos y guardar los cambios
-                        _context.Pais.Add(nuevoPais);
-                        _context.SaveChanges();
-
-                        // Redirigir de vuelta a la vista de países
-                        return RedirectToAction("Paises");
-                    }
-                    else
-                    {
-                        // Si el archivo no es una imagen, mostrar un mensaje de error en la consola
-                        Console.WriteLine("El archivo seleccionado no es una imagen válida.");
-                    }
+                    return Json(new { success = false, message = "Ya existe un pais con el mismo nombre" });
                 }
-                else
-                {
-                    // Si no se ha seleccionado ningún archivo, mostrar un mensaje de error en la consola
-                    Console.WriteLine("Por favor, seleccione una imagen.");
-                }
+
+                // Agregar nuevo usuario a la base de datos
+                _context.Pais.Add(nuevoPais);
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Pais registrado con exito" });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Manejar errores de validación del modelo
+                var errorMessage = ex.EntityValidationErrors
+                                      .SelectMany(x => x.ValidationErrors)
+                                      .Select(x => x.ErrorMessage);
+                return Json(new { success = false, message = "Error al registrar pais: " + ex.Message });
             }
             catch (Exception ex)
             {
-                // Manejar cualquier error que pueda ocurrir durante el proceso de guardar la imagen
-                Console.WriteLine("Error al guardar la imagen: " + ex.Message);
+                // Manejar otros errores
+                return Json(new { success = false, message = "Error al registrar pais: " + ex.Message });
             }
 
-            // Redirigir de vuelta a la vista de países
-            return RedirectToAction("Paises");
+            //return Json(new { success = true, message = "Se guardó la imagen"});
         }
+
+
 
         public ActionResult Paises()
         {

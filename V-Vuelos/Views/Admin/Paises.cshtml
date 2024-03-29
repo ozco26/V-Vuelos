@@ -5,6 +5,63 @@
 
 <h2>Paises</h2>
 
+<script>
+    async function leerArchivoComoBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result.split(',')[1]);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function GuardarPais() {
+        try {
+            const codPais = document.getElementById("codigoPais").value.trim();
+            const nombre = document.getElementById("nombrePais").value.trim();
+            const imagen = document.getElementById("imagen");
+
+            if (imagen.files.length > 0) {
+                const file = imagen.files[0];
+                const String64 = await leerArchivoComoBase64(file);
+                console.log('Base 64 Imagen: ' + String64);
+
+                const PaisCuerpo = {
+                    CodigoPais: codPais,
+                    NombrePais: nombre,
+                    Imagen: String64
+                };
+
+                console.log(PaisCuerpo);
+
+                const response = await fetch('/Admin/GuardarImagen', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(PaisCuerpo)
+                });
+
+                const data = await response.json();
+                console.log(data.success + ', ' + data.message);
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message)
+                }
+            } else {
+                console.log('No se pudo guardar la imagen');
+            }
+        } catch (err) {
+            console.error('Error:' + err);
+            alert('Error al registrar país');
+        }
+    }
+
+</script>
+
 <div class="row" style="padding: 4px">
     <div class="col" style="text-align:center; padding:5px">
         <table class="table table-striped">
@@ -25,16 +82,33 @@
         </table>
     </div>
     <div class="col" style="text-align:left; padding:1px">
-        <h3>Crear nuevos Países</h3>
-        <form enctype="multipart/form-data" method="post" action="GuardarImagen">
-            <p>Código</p>
-            <input id="codigoPais" name="codigoPais" type="text"> <br />
-            <p>Nombre del País</p>
-            <input id="nombrePais" name="nombrePais" type="text"><br /><br />
-            <p>Imagen</p>
-            <input type="file" name="imagen" accept="image/*"><br /><br />
-            <button type="submit">Guardar</button>
-            <button type="reset">Limpiar</button><br />
+        <h3>Registrar Pais</h3>
+        <form>
+            <table style="border-collapse: collapse;">
+                <tr>
+                    <td><p>Código:</p></td>
+                    <td><input id="codigoPais" name="codigoPais" type="text"></td>
+                </tr>
+                <tr>
+                    <td><p>Nombre del País:</p></td>
+                    <td><input id="nombrePais" name="nombrePais" type="text"></td>
+                </tr>
+                <tr>
+                    <td><p>Imagen:</p></td>
+                    <td><input type="file" id="imagen" name="imagen" accept="image/*"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" onclick="GuardarPais()">Guardar</button>
+                        <button type="button" onclick="LimpiarTodo()">Limpiar</button>
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
 </div>
+
+
+
+
+
