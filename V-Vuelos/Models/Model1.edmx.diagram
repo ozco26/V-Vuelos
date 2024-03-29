@@ -8,10 +8,10 @@
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolinea" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolineas_Pais" Width="1.5" PointX="8" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Consecutivo" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Errore" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Errore" Width="1.5" PointX="0.625" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Pai" Width="1.5" PointX="5.75" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Permiso" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Puerta" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Puerta" Width="1.5" PointX="2.75" PointY="7.125" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Rol" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Usuario" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Vitacora" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />

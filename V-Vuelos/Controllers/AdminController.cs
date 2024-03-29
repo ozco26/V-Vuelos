@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using System.Web.UI;
 using V_Vuelos.Filter;
 using V_Vuelos.Models;
 
@@ -239,42 +241,94 @@ namespace V_Vuelos.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult GuardarImagen(HttpPostedFileBase imagen, string codigoPais, string nombrePais)
+        {
+            try
+            {
+                if (imagen != null && imagen.ContentLength > 0)
+                {
+                    // Verificar si el archivo es una imagen
+                    if (imagen.ContentType.ToLower().StartsWith("image/"))
+                    {
+                        // Convertir la imagen a bytes
+                        byte[] imageData = null;
+                        using (var binaryReader = new BinaryReader(imagen.InputStream))
+                        {
+                            imageData = binaryReader.ReadBytes(imagen.ContentLength);
+                        }
 
+                        // Crear un nuevo objeto de tipo Pais para almacenar en la base de datos
+                        Pai nuevoPais = new Pai
+                        {
+                            CodigoPais = codigoPais,
+                            NombrePais = nombrePais,
+                            Imagen = Convert.ToBase64String(imageData) // Convertir los bytes de la imagen a una cadena Base64 y guardarla en la propiedad Imagen
+                        };
 
-    
+                        // Agregar el nuevo país a la base de datos y guardar los cambios
+                        _context.Pais.Add(nuevoPais);
+                        _context.SaveChanges();
 
-    public ActionResult Paises()
-    {
-        return View();
-    }
+                        // Redirigir de vuelta a la vista de países
+                        return RedirectToAction("Paises");
+                    }
+                    else
+                    {
+                        // Si el archivo no es una imagen, mostrar un mensaje de error en la consola
+                        Console.WriteLine("El archivo seleccionado no es una imagen válida.");
+                    }
+                }
+                else
+                {
+                    // Si no se ha seleccionado ningún archivo, mostrar un mensaje de error en la consola
+                    Console.WriteLine("Por favor, seleccione una imagen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier error que pueda ocurrir durante el proceso de guardar la imagen
+                Console.WriteLine("Error al guardar la imagen: " + ex.Message);
+            }
 
-    public ActionResult Aerolineas()
-    {
-        return View();
-    }
+            // Redirigir de vuelta a la vista de países
+            return RedirectToAction("Paises");
+        }
 
-    public ActionResult Puertas()
-    {
-        return View();
-    }
-    public ActionResult Bitacora()
-    {
-        return View();
-    }
+        public ActionResult Paises()
+        {
+            var paises = _context.Pais;
+            ViewBag.Paises = paises;
+            return View();
+        }
 
-    public ActionResult Errores()
-    {
-        return View();
-    }
+        public ActionResult Aerolineas()
+        {
+            return View();
+        }
 
-    public ActionResult AerolineasPorPais()
-    {
-        return View();
+        public ActionResult Puertas()
+        {
+            return View();
+        }
+        public ActionResult Bitacora()
+        {
+            return View();
+        }
+
+        public ActionResult Errores()
+        {
+            return View();
+        }
+
+        public ActionResult AerolineasPorPais()
+        {
+            return View();
+        }
+        public ActionResult EstadoPuertas()
+        {
+            return View();
+        }
     }
-    public ActionResult EstadoPuertas()
-    {
-        return View();
-    }
-}
 }
 
