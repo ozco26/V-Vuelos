@@ -60,6 +60,21 @@
         }
     }
 
+    function ObtenerPrefijoPais() {
+        var ultimoPrefijo = '@ViewBag.UltimoPrefijoPais';
+        var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
+
+        var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
+
+        console.log(ultimoPrefijo+'-'+numeroConsecutivo)
+
+        return devolver;
+    };
+
+    window.onload = function () {
+        document.getElementById("codigoPais").value = ObtenerPrefijoPais();
+    };
+
 </script>
 
 <div class="row" style="padding: 4px">
@@ -87,7 +102,7 @@
             <table style="border-collapse: collapse;">
                 <tr>
                     <td><p>Código:</p></td>
-                    <td><input id="codigoPais" name="codigoPais" type="text"></td>
+                    <td><input id="codigoPais" name="codigoPais" type="text" readonly value=""></td>
                 </tr>
                 <tr>
                     <td><p>Nombre del País:</p></td>
@@ -100,7 +115,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="button" onclick="GuardarPais()">Guardar</button>
-                        <button type="button" onclick="LimpiarTodo()">Limpiar</button>
+                        <button type="button" onclick="Limpiar()">Limpiar</button>
                     </td>
                 </tr>
             </table>
