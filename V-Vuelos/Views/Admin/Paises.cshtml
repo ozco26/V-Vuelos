@@ -6,6 +6,11 @@
 <h2>Paises</h2>
 
 <script>
+    function Limpiar() {
+        document.getElementById("nombrePais").value = ""; 
+        document.getElementById("imagen").value = null; 
+    }
+
     async function leerArchivoComoBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -115,7 +120,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="button" onclick="GuardarPais()">Guardar</button>
-                        <button type="button" onclick="Limpiar()">Limpiar</button>
+                        <button type="button" onclick="Limpiar()">Borrar</button>
                     </td>
                 </tr>
             </table>

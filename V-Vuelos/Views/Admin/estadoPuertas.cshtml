@@ -2,36 +2,151 @@
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
-    ViewBag.Title = "estadoPuertas";
+    ViewBag.Title = "Puertas";
 }
 
-<h2>Estado de las Puertas</h2>
+<h2>Puertas</h2>
 
-<table border="1" class="table table-striped">
-    <thead>
-        <tr>
-            <th>Código</th>
-            <th>Número</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>P001</td>
-            <td>Puerta 1</td>
-            <td>Abierta</td>
-        </tr>
-        <tr>
-            <td>P002</td>
-            <td>Puerta 2</td>
-            <td>Cerrada</td>
-        </tr>
-        <tr>
-            <td>P003</td>
-            <td>Puerta 3</td>
-            <td>Abierta</td>
-        </tr>
-        <!-- Agrega más filas según sea necesario para representar tus puertas -->
-    </tbody>
-</table>
+<script>
+    function Limpiar() {
+        document.getElementById("numeroPuerta").value = "";
+    }
+    async function GuardarPuerta() {
+        try {
+            const numPuerta = document.getElementById("numeroPuerta").value.trim();
+            const codPuerta = document.getElementById("codigoPuerta").value.trim();
+            const estado = document.getElementById("estado").value.trim();
 
+            const PuertaCuerpo = {
+                Codigo: codPuerta,
+                numero: numPuerta,
+                Detalle: estado
+            }
+
+            console.log(PuertaCuerpo);
+
+            const response = await fetch('/Admin/GuardarPuerta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(PuertaCuerpo)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message)
+            }
+
+        }catch (err) {
+            console.error('Error:' + err);
+            alert('Error al registrar puerta');
+        }
+
+    }
+   function ObtenerPrefijoPais() {
+       var ultimoPrefijo = '@ViewBag.UltimoPrefijoPuerta';
+       var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
+
+       var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
+
+       console.log(ultimoPrefijo+'-'+numeroConsecutivo)
+
+       return devolver;
+    };
+
+    function CambiarEstado(codigoPuerta){
+
+    }
+
+    window.onload = function () {
+        document.getElementById("codigoPuerta").value = ObtenerPrefijoPais();
+    };
+    function CambiarEstado(codigoPuerta) {
+        const selectEstado = document.getElementById("estado");
+        const nuevoEstado = selectEstado.value;
+        const data = { codigoPuerta: codigoPuerta, nuevoEstado: nuevoEstado };
+
+        fetch('/Admin/CambiarEstado', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar la vista o mostrar un mensaje de éxito
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al cambiar el estado de la puerta');
+            });
+    };
+
+
+
+</script>
+
+
+<div class="row" style="padding: 4px">
+    <div class="col" style="text-align:center; padding:5px">
+        <table class="table table-striped">
+            <tr>
+                <th>Código de la puerta</th>
+                <th>Número de la puerta</th>
+                <th>Detalle</th>
+                <th></th>
+            </tr>
+            <tr>
+                @foreach (var puerta in ViewBag.Puerta)
+                {
+                <tr>
+                    <td>@puerta.Codigo</td>
+                    <td>@puerta.numero</td>
+                    <td>@puerta.Detalle</td>
+                    <td><button type="button" data-codigo="@puerta.Codigo" onclick="CambiarEstado('@puerta.Codigo')">Cambio</button></td>
+                </tr>
+            }
+            </table>
+        </div>
+        <div class="col" style="text-align:left" ; padding:1px>
+            <div class="col" style="text-align:left; padding:1px">
+                <h3>Registrar Puerta</h3>
+                <form>
+                    <table style="border-collapse: collapse;">
+                        <tr>
+                            <td><p>Código:</p></td>
+                            <td><input id="codigoPuerta" name="codigoPuerta" type="text" readonly value=""></td>
+                        </tr>
+                        <tr>
+                            <td><p>Numero Puerta:</p></td>
+                            <td><input id="numeroPuerta" name="numeroPuerta" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td><p>Estado:</p></td>
+                            <td>
+                                <select id="estado" name="estado">
+                                    <option value="0">Cerrado</option>
+                                    <option value="1">Abierto</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button type="button" onclick="GuardarPuerta()">Guardar</button>
+                                <button type="button" onclick="Limpiar()">Borrar</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>

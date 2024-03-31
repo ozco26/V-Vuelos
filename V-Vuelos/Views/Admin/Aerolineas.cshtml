@@ -8,6 +8,12 @@
 <h2>Aerolineas</h2>
 
 <script>
+
+    function Limpiar() {
+        document.getElementById("NombreAgencia").value = ""; 
+        document.getElementById("Imagen").value = null; 
+    }
+
     async function leerArchivoComoBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -121,7 +127,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="button" onclick="GuardarAero()">Guardar</button>
-                        <button type="button" onclick="Limpiar()">Limpiar</button>
+                        <button type="button" onclick="Limpiar()">Borrar</button>
                     </td>
                 </tr>
             </table>
