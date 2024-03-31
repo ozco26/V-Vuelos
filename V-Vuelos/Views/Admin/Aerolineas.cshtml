@@ -7,7 +7,79 @@
 
 <h2>Aerolineas</h2>
 
+<script>
+    async function leerArchivoComoBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result.split(',')[1]);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
 
+    async function GuardarAero() {
+        try {
+            const codAero = document.getElementById("CodigoAerolinea").value.trim();
+            const nombre = document.getElementById("NombreAgencia").value.trim();
+            const imagen = document.getElementById("Imagen");
+
+            if (imagen.files.length > 0) {
+                const file = imagen.files[0];
+                const String64 = await leerArchivoComoBase64(file);
+                console.log('Base 64 Imagen: ' + String64);
+
+                const AeroCuerpo = {
+                    CodigoAerolinea: codAero,
+                    NombreAgencia: nombre,
+                    Imagen: String64
+                };
+
+                console.log(AeroCuerpo);
+
+                const response = await fetch('/Admin/GuardarAero', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(AeroCuerpo)
+                });
+
+                const data = await response.json();
+                console.log(data.success + ', ' + data.message);
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message)
+                }
+            } else {
+                console.log('No se pudo guardar la imagen');
+            }
+
+
+        } catch (err) {
+            console.error('Error:' + err);
+            alert('Error al registrar Aerolinea');
+        }
+    }
+
+    function ObtenerPrefijoPais() {
+    var ultimoPrefijo = '@ViewBag.UltimoPrefijoAero';
+    var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
+
+    var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
+
+    console.log(ultimoPrefijo+'-'+numeroConsecutivo)
+
+    return devolver;
+    };
+
+    window.onload = function () {
+        document.getElementById("CodigoAerolinea").value = ObtenerPrefijoPais();
+    };
+
+</script>
 
 
 <div class="row" style="padding: 4px">
@@ -31,20 +103,20 @@
             </table>
     </div>
     <div class="col" style="text-align:left; padding:1px">
-        <h3>Registrar Pais</h3>
+        <h3>Registrar Agencia</h3>
         <form>
             <table style="border-collapse: collapse;">
                 <tr>
                     <td><p>Código:</p></td>
-                    <td><input id="codigoPais" name="codigoPais" type="text" readonly value=""></td>
+                    <td><input id="CodigoAerolinea" name="CodigoAerolinea" type="text" readonly value=""></td>
                 </tr>
                 <tr>
-                    <td><p>Nombre del País:</p></td>
-                    <td><input id="nombrePais" name="nombrePais" type="text"></td>
+                    <td><p>Nombre de la Agencia:</p></td>
+                    <td><input id="NombreAgencia" name="NombreAgencia" type="text"></td>
                 </tr>
                 <tr>
                     <td><p>Imagen:</p></td>
-                    <td><input type="file" id="imagen" name="imagen" accept="image/*"></td>
+                    <td><input type="file" id="Imagen" name="Imagen" accept="image/*"></td>
                 </tr>
                 <tr>
                     <td colspan="2">

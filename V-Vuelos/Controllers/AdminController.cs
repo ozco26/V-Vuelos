@@ -240,6 +240,61 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
+        [HttpPost]
+        public ActionResult GuardarAero(Aerolinea nuevoAero)
+        {
+            try
+            {
+                var usuarioExistente = _context.Aerolineas.FirstOrDefault(u => u.NombreAgencia == nuevoAero.NombreAgencia);
+                if (usuarioExistente != null)
+                {
+                    return Json(new { success = false, message = "Ya existe una Agencia con el mismo nombre" });
+                }
+
+                var ActualConsecutivoPais = _context.Consecutivos;
+
+                var consecutivoPaises = ActualConsecutivoPais.Where(c => c.Descripcion == "aerolineas");
+                var ultimoConsecutivo = consecutivoPaises.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+                var ultimoPrefijoPais = ultimoConsecutivo?.Prefijo;
+
+                var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
+
+                var nuevoConsecutivo = new Consecutivo
+                {
+                    Descripcion = "aerolineas", // Establecer la descripción
+                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
+                    Consecutivo1 = numeroConsecutivo,
+                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                };
+
+                // Agregar nuevo usuario a la base de datos
+                _context.Aerolineas.Add(nuevoAero);
+                _context.Consecutivos.Add(nuevoConsecutivo);
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Aerolinea registrada con exito" });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Obtener los mensajes de error de validación
+                var errorMessages = ex.EntityValidationErrors
+                                      .SelectMany(x => x.ValidationErrors)
+                                      .Select(x => x.ErrorMessage);
+
+                // Combinar los mensajes de error en una sola cadena
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Devolver los mensajes de error
+                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+            }
+
+
+            //return Json(new { success = true, message = nuevoAero.ToString()});
+        }
 
 
         [HttpPost]
@@ -329,7 +384,7 @@ namespace V_Vuelos.Controllers
             var consecutivoAero = consecutivo.Where(c => c.Descripcion == "aerolineas");
             var ultimoConsecutivo = consecutivoAero.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
             var ultimoPrefijoAero = ultimoConsecutivo?.Prefijo;
-            ViewBag.UltimoPrefijoPais = ultimoPrefijoAero;
+            ViewBag.UltimoPrefijoAero = ultimoPrefijoAero;
             ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
 
             ViewBag.Aerolinea = aerolinea;
