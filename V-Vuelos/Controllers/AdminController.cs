@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using System.Web.UI;
 using V_Vuelos.Filter;
 using V_Vuelos.Models;
 
@@ -237,44 +240,269 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
+        [HttpPost]
+        public ActionResult GuardarAero(Aerolinea nuevoAero)
+        {
+            try
+            {
+                var usuarioExistente = _context.Aerolineas.FirstOrDefault(u => u.NombreAgencia == nuevoAero.NombreAgencia);
+                if (usuarioExistente != null)
+                {
+                    return Json(new { success = false, message = "Ya existe una Agencia con el mismo nombre" });
+                }
+
+                var ActualConsecutivoPais = _context.Consecutivos;
+
+                var consecutivoPaises = ActualConsecutivoPais.Where(c => c.Descripcion == "aerolineas");
+                var ultimoConsecutivo = consecutivoPaises.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+                var ultimoPrefijoPais = ultimoConsecutivo?.Prefijo;
+
+                var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
+
+                var nuevoConsecutivo = new Consecutivo
+                {
+                    Descripcion = "aerolineas", // Establecer la descripción
+                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
+                    Consecutivo1 = numeroConsecutivo,
+                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                };
+
+                // Agregar nuevo usuario a la base de datos
+                _context.Aerolineas.Add(nuevoAero);
+                _context.Consecutivos.Add(nuevoConsecutivo);
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Aerolinea registrada con exito" });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Obtener los mensajes de error de validación
+                var errorMessages = ex.EntityValidationErrors
+                                      .SelectMany(x => x.ValidationErrors)
+                                      .Select(x => x.ErrorMessage);
+
+                // Combinar los mensajes de error en una sola cadena
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Devolver los mensajes de error
+                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+            }
+
+
+            //return Json(new { success = true, message = nuevoAero.ToString()});
+        }
+
+
+        [HttpPost]
+        public ActionResult GuardarImagen(Pai nuevoPais)
+        {
+
+            try
+            {
+                
+                var usuarioExistente = _context.Pais.FirstOrDefault(u => u.NombrePais == nuevoPais.NombrePais);
+                if (usuarioExistente != null)
+                {
+                    return Json(new { success = false, message = "Ya existe un pais con el mismo nombre" });
+                }
+
+                var ActualConsecutivoPais = _context.Consecutivos;
+
+                var consecutivoPaises = ActualConsecutivoPais.Where(c => c.Descripcion == "paises");
+                var ultimoConsecutivo = consecutivoPaises.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+                var ultimoPrefijoPais = ultimoConsecutivo?.Prefijo;
+
+                var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
 
 
 
+                var nuevoConsecutivo = new Consecutivo
+                {
+                    Descripcion = "paises", // Establecer la descripción
+                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false, 
+                    Consecutivo1 = numeroConsecutivo,
+                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                };
 
-    
 
-    public ActionResult Paises()
-    {
-        return View();
+
+                // Agregar nuevo usuario a la base de datos
+                _context.Pais.Add(nuevoPais);
+                _context.Consecutivos.Add(nuevoConsecutivo);
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Pais registrado con exito" });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Obtener los mensajes de error de validación
+                var errorMessages = ex.EntityValidationErrors
+                                      .SelectMany(x => x.ValidationErrors)
+                                      .Select(x => x.ErrorMessage);
+
+                // Combinar los mensajes de error en una sola cadena
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Devolver los mensajes de error
+                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+            }
+
+            //return Json(new { success = true, message = "Se guardó la imagen"});
+        }
+
+
+        [HttpPost]
+        public ActionResult GuardarPuerta(Puerta nuevaPuerta)
+        {
+
+            try
+            {
+
+                var usuarioExistente = _context.Puertas.FirstOrDefault(u => u.numero == nuevaPuerta.numero);
+                if (usuarioExistente != null)
+                {
+                    return Json(new { success = false, message = "La puerta ya está registrada" });
+                }
+
+                var ActualConsecutivoPuerta = _context.Consecutivos;
+
+                var consecutivoPuerta = ActualConsecutivoPuerta.Where(c => c.Descripcion == "puertas");
+                var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+                var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
+
+                var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
+
+                var nuevoConsecutivo = new Consecutivo
+                {
+                    Descripcion = "puertas", // Establecer la descripción
+                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
+                    Consecutivo1 = numeroConsecutivo,
+                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                };
+
+                // Agregar nuevo usuario a la base de datos
+                _context.Puertas.Add(nuevaPuerta);
+                _context.Consecutivos.Add(nuevoConsecutivo);
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Pais registrado con exito" });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Obtener los mensajes de error de validación
+                var errorMessages = ex.EntityValidationErrors
+                                      .SelectMany(x => x.ValidationErrors)
+                                      .Select(x => x.ErrorMessage);
+
+                // Combinar los mensajes de error en una sola cadena
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Devolver los mensajes de error
+                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+            }
+
+            //return Json(new { success = true, message = "Se guardó la imagen"});
+        }
+
+        [HttpPost]
+        public ActionResult CambiarEstado(string codigoPuerta)
+        {
+            try
+            {
+                var puerta = _context.Puertas.FirstOrDefault(p => p.Codigo == codigoPuerta);
+                if (puerta == null)
+                {
+                    return Json(new { success = false, message = "La puerta no existe" });
+                }
+
+                // Cambiar el estado de la puerta
+                puerta.Detalle = puerta.Detalle == "1" ? "0" : "1";
+                _context.SaveChanges();
+
+                // Devolver un código de éxito
+                return Json(new { success = true, message = "Estado de la puerta cambiado con éxito" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al cambiar el estado de la puerta: " + ex.Message });
+            }
+        }
+
+        public ActionResult Paises()
+        {
+            var paises = _context.Pais;
+            var consecutivo = _context.Consecutivos;
+
+            var consecutivoPaises = consecutivo.Where(c => c.Descripcion == "paises");
+            var ultimoConsecutivo = consecutivoPaises.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoPrefijoPais = ultimoConsecutivo?.Prefijo;
+            ViewBag.UltimoPrefijoPais = ultimoPrefijoPais;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+
+            ViewBag.Paises = paises;
+            return View();
+        }
+
+        public ActionResult Aerolineas()
+        {
+
+            var aerolinea = _context.Aerolineas;
+            var consecutivo = _context.Consecutivos;
+
+            var consecutivoAero = consecutivo.Where(c => c.Descripcion == "aerolineas");
+            var ultimoConsecutivo = consecutivoAero.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoPrefijoAero = ultimoConsecutivo?.Prefijo;
+            ViewBag.UltimoPrefijoAero = ultimoPrefijoAero;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+
+            ViewBag.Aerolinea = aerolinea;
+
+            return View();
+        }
+
+        
+        public ActionResult Bitacora()
+        {
+            return View();
+        }
+
+        public ActionResult Errores()
+        {
+            return View();
+        }
+
+        public ActionResult AerolineasPorPais()
+        {
+            return View();
+        }
+        public ActionResult EstadoPuertas()
+        {
+            var puerta = _context.Puertas;
+            var consecutivo = _context.Consecutivos;
+
+            var consecutivoPuerta = consecutivo.Where(c => c.Descripcion == "puertas");
+            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
+
+            ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+
+            ViewBag.puerta = puerta;
+            
+            return View();
+        }
     }
-
-    public ActionResult Aerolineas()
-    {
-        return View();
-    }
-
-    public ActionResult Puertas()
-    {
-        return View();
-    }
-    public ActionResult Bitacora()
-    {
-        return View();
-    }
-
-    public ActionResult Errores()
-    {
-        return View();
-    }
-
-    public ActionResult AerolineasPorPais()
-    {
-        return View();
-    }
-    public ActionResult EstadoPuertas()
-    {
-        return View();
-    }
-}
 }
 

@@ -2,10 +2,69 @@
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
-    ViewBag.Title = "Puertas";
+    ViewBag.Title = "PuertasNo";
 }
 
 <h2>Puertas</h2>
+
+<script>
+    function Limpiar() {
+        document.getElementById("numeroPuerta").value = "";
+        document.getElementById("codigoPuerta").value = "";
+        document.getElementById("estado").value = "";
+    }
+    async function GuardarPuerta() {
+        try {
+            const numPuerta = document.getElementById("numeroPuerta").value.trim();
+            const codPuerta = document.getElementById("codigoPuerta").value.trim();
+            const estado = document.getElementById("estado").value.trim();
+
+            const PuertaCuerpo = {
+                Codigo: codPuerta,
+                numero: numPuerta,
+                Detalle: estado
+            }
+
+            console.log(PuertaCuerpo);
+
+            const response = await fetch('/Admin/GuardarPuerta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(PuertaCuerpo)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message)
+            }
+
+        }catch (err) {
+            console.error('Error:' + err);
+            alert('Error al registrar puerta');
+        }
+
+    }
+   function ObtenerPrefijoPais() {
+       var ultimoPrefijo = '@ViewBag.UltimoPrefijoPuerta';
+       var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
+
+       var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
+
+       console.log(ultimoPrefijo+'-'+numeroConsecutivo)
+
+       return devolver;
+   };
+
+    window.onload = function () {
+        document.getElementById("codigoPuerta").value = ObtenerPrefijoPais();
+    };
+
+</script>
 
 
 <div class="row" style="padding: 4px">
@@ -18,22 +77,40 @@
                 <th></th>
             </tr>
             <tr>
-                <td>CP-05</td>
-                <td>5</td>
-                <td>Puera número 5
-            </tr>
-        </table>
+            @foreach (var puerta in ViewBag.Puerta)
+             {
+                <tr>
+                    <td>@puerta.Codigo</td>
+                    <td>@puerta.numero</td>
+                    <td>@puerta.Detalle</td>
+                </tr>
+            }
+            </table>
     </div>
     <div class="col" style="text-align:left" ; padding:1px>
-        <h3>Crear nueva puerta</h3>
-        <p>Código</p>
-        <input id="inpCodPuerta" type="text" readonly> <br />
-        <p>Número del puerta</p>
-        <input id="inpNumber" type="text"><br />
-        <p>Detalle</p>
-        <input id="inpDetalle" type="text"><br /><br />
-        <button>Guardar</button>
-        <button>Limpiar</button><br />
-
-    </div>
+        <div class="col" style="text-align:left; padding:1px">
+            <h3>Registrar Puerta</h3>
+            <form>
+                <table style="border-collapse: collapse;">
+                    <tr>
+                        <td><p>Código:</p></td>
+                        <td><input id="codigoPuerta" name="codigoPuerta" type="text" readonly value=""></td>
+                    </tr>
+                    <tr>
+                        <td><p>Numero de Puerta:</p></td>
+                        <td><input id="numeroPuerta" name="numeroPuerta" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><p>Estado:</p></td>
+                        <td><input type="text" id="estado" name="estado" accept="image/*"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="button" onclick="GuardarPuerta()">Guardar</button>
+                            <button type="button" onclick="Limpiar()">Borrar</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
 </div>
