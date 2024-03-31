@@ -240,6 +240,7 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
+        [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarAero(Aerolinea nuevoAero)
         {
@@ -296,7 +297,7 @@ namespace V_Vuelos.Controllers
             //return Json(new { success = true, message = nuevoAero.ToString()});
         }
 
-
+        [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarImagen(Pai nuevoPais)
         {
@@ -352,13 +353,13 @@ namespace V_Vuelos.Controllers
                 var fullErrorMessage = string.Join("; ", errorMessages);
 
                 // Devolver los mensajes de error
-                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+                return Json(new { success = false, message = "Error al registrar el Pais: " + fullErrorMessage });
             }
 
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
 
-
+        [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarPuerta(Puerta nuevaPuerta)
         {
@@ -397,7 +398,7 @@ namespace V_Vuelos.Controllers
                 _context.SaveChanges();
 
                 // Devolver un código de éxito
-                return Json(new { success = true, message = "Pais registrado con exito" });
+                return Json(new { success = true, message = "Puerta registrada con exito" });
             }
             catch (DbEntityValidationException ex)
             {
@@ -410,12 +411,12 @@ namespace V_Vuelos.Controllers
                 var fullErrorMessage = string.Join("; ", errorMessages);
 
                 // Devolver los mensajes de error
-                return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
+                return Json(new { success = false, message = "Error al registrar Puerta: " + fullErrorMessage });
             }
 
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
-
+        [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult CambiarEstado(string codigoPuerta)
         {
@@ -439,7 +440,7 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al cambiar el estado de la puerta: " + ex.Message });
             }
         }
-
+        [AuthorizeUser(idOperation: 3)]
         public ActionResult Paises()
         {
             var paises = _context.Pais;
@@ -454,7 +455,7 @@ namespace V_Vuelos.Controllers
             ViewBag.Paises = paises;
             return View();
         }
-
+        [AuthorizeUser(idOperation: 3)]
         public ActionResult Aerolineas()
         {
 

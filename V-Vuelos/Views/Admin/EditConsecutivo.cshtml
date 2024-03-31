@@ -150,7 +150,10 @@
                 return alert("El consecutivo debe de estar entre el rango inicial y el final")
             }
         }
-        
+        if (!ckbRang.checked) {
+            inpRangEnd = 0;
+        }
+
         var cuerpo = {
 
             Descripcion: select,
