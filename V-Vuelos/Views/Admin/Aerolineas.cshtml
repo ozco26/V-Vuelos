@@ -61,24 +61,25 @@
                 }
             } else {
                 console.log('No se pudo guardar la imagen');
+                Alert("Complete todos los campos")
             }
 
 
         } catch (err) {
             console.error('Error:' + err);
-            alert('Error al registrar Aerolinea');
+            alert('Complete todos los campos');
         }
     }
 
     function ObtenerPrefijoPais() {
-    var ultimoPrefijo = '@ViewBag.UltimoPrefijoAero';
-    var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
+        var ultimoPrefijo = '@ViewBag.UltimoPrefijoAero';
+        var numeroConsecutivo = parseInt('@ViewBag.NumeroConsecutivo') + 1;
 
-    var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
+        var devolver = ultimoPrefijo + '-' + numeroConsecutivo;
 
-    console.log(ultimoPrefijo+'-'+numeroConsecutivo)
+        console.log(ultimoPrefijo+'-'+numeroConsecutivo)
 
-    return devolver;
+        return devolver;
     };
 
     window.onload = function () {

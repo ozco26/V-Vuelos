@@ -245,6 +245,13 @@ namespace V_Vuelos.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(nuevoAero.NombreAgencia)|| string.IsNullOrEmpty(nuevoAero.CodigoAerolinea)|| string.IsNullOrEmpty(nuevoAero.Imagen))
+                {
+                    return Json(new { success = false, message = "Complete todos los campos" });
+
+
+                }
+
                 var usuarioExistente = _context.Aerolineas.FirstOrDefault(u => u.NombreAgencia == nuevoAero.NombreAgencia);
                 if (usuarioExistente != null)
                 {
@@ -303,7 +310,12 @@ namespace V_Vuelos.Controllers
 
             try
             {
-                
+
+                if (string.IsNullOrEmpty(nuevoPais.CodigoPais) || string.IsNullOrEmpty(nuevoPais.NombrePais) || string.IsNullOrEmpty(nuevoPais.Imagen))
+                {
+                    return Json(new { success = false, message = "Complete todos los campos" });
+                }
+
                 var usuarioExistente = _context.Pais.FirstOrDefault(u => u.NombrePais == nuevoPais.NombrePais);
                 if (usuarioExistente != null)
                 {
@@ -366,11 +378,19 @@ namespace V_Vuelos.Controllers
             try
             {
 
+
+                if (string.IsNullOrEmpty(nuevaPuerta.Codigo) || nuevaPuerta.numero == 0 || string.IsNullOrEmpty(nuevaPuerta.Detalle))
+                {
+                    return Json(new { success = false, message = "Complete todos los campos" });
+                }
+
                 var usuarioExistente = _context.Puertas.FirstOrDefault(u => u.numero == nuevaPuerta.numero);
                 if (usuarioExistente != null)
                 {
                     return Json(new { success = false, message = "La puerta ya está registrada" });
                 }
+
+                
 
                 var ActualConsecutivoPuerta = _context.Consecutivos;
 
@@ -421,10 +441,12 @@ namespace V_Vuelos.Controllers
         {
             try
             {
+
+
                 var puerta = _context.Puertas.FirstOrDefault(p => p.Codigo == codigoPuerta);
                 if (puerta == null)
                 {
-                    return Json(new { success = false, message = "La puerta no existe" });
+                    return Json(new { success = false, message = "La puerta ya existe" });
                 }
 
                 // Cambiar el estado de la puerta

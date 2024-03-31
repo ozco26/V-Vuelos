@@ -92,10 +92,7 @@
             });
     };
 
-
-
 </script>
-
 
 <div class="row" style="padding: 4px">
     <div class="col" style="text-align:center; padding:5px">
@@ -112,7 +109,16 @@
                 <tr>
                     <td>@puerta.Codigo</td>
                     <td>@puerta.numero</td>
-                    <td>@puerta.Detalle</td>
+                    
+                        @if (puerta.Detalle == "1")
+                        {
+                            <td>Abierto</td>
+                        }
+                        else
+                        {
+                            <td>Cerrado</td>
+                        }
+                    
                     <td><button type="button" data-codigo="@puerta.Codigo" onclick="CambiarEstado('@puerta.Codigo')">Cambio</button></td>
                 </tr>
             }
