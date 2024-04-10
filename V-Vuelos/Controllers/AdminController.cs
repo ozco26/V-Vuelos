@@ -18,11 +18,29 @@ namespace V_Vuelos.Controllers
     {
         private readonly V_vuelos_ProyectoEntities _context;
 
-        public AdminController() => _context = new V_vuelos_ProyectoEntities(); // ApplicationDbContext es tu contexto de base de datos
+        public AdminController() => _context = new V_vuelos_ProyectoEntities(); //  contexto de base de datos
 
-        //Visualiza la pantalla Bienvenidos
+        private void RegistrarError(Exception ex , string controlador,string accion)
+        {
+            using (var context = new V_vuelos_ProyectoEntities())
+            {
+                DateTime fechaActual = DateTime.Now;
+                var errorLog = new Errore
+                {
+                    Descripcion = "Error producido en "+controlador+ " "+accion,
+                    Fecha_Hora = fechaActual,
+                    Error = ex.Message
+                };
+                // Agregar el error a la base de datos y guardar los cambios, fecha e id los caoloca la BD
+                context.Errores.Add(errorLog);
+                context.SaveChanges();
+            }
+        }
+    
 
-        [AuthorizeUser(idOperation: 1)]
+
+    //Visualiza la pantalla Bienvenidos
+    [AuthorizeUser(idOperation: 1)]
         public ActionResult Default()
         {
             return View();
@@ -61,6 +79,7 @@ namespace V_Vuelos.Controllers
             }
             catch (Exception ex)
             {
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 // Manejar cualquier error que ocurra durante la actualización de roles
                 return Json(new { success = false });
             }
@@ -86,7 +105,15 @@ namespace V_Vuelos.Controllers
                 var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.Nombre_Usuario == nuevoUsuario.Nombre_Usuario);
                 if (usuarioExistente != null)
                 {
-                    return Json(new { success = false, message = "El nombre de usuario ya está en uso." });
+                    try
+                    {
+                        throw new Exception("El nombre de usuario ya está en uso.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "El nombre de usuario ya está en uso." });
+                    }
                 }
 
                 // Agregar nuevo usuario a la base de datos
@@ -99,6 +126,7 @@ namespace V_Vuelos.Controllers
             catch (DbEntityValidationException ex)
             {
                 // Manejar errores de validación del modelo
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 var errorMessage = ex.EntityValidationErrors
                                       .SelectMany(x => x.ValidationErrors)
                                       .Select(x => x.ErrorMessage);
@@ -106,6 +134,7 @@ namespace V_Vuelos.Controllers
             }
             catch (Exception ex)
             {
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 // Manejar otros errores
                 return Json(new { success = false, message = "Error al crear el usuario: " + ex.Message });
             }
@@ -138,32 +167,50 @@ namespace V_Vuelos.Controllers
                     }
                     else
                     {
-                        return Json(new { success = false, message = "La contraseña actual no coincide con la registrada, vuelva a intentar." });
+                        try
+                        {
+                            throw new Exception("La contraseña actual no coincide con la registrada, vuelva a intentar.");
+                        }
+                        catch (Exception ex)
+                        {
+                            RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                            return Json(new { success = false, message = "La contraseña actual no coincide con la registrada, vuelva a intentar." });
+                        }
+                       
                     }
                 }
                 else
                 {
-                    // El usuario no existe, puedes manejarlo de acuerdo a tus requerimientos
-                    return Json(new { success = false, message = "El usuario no existe." });
+                    try
+                    {
+                        throw new Exception("El usuario no existe.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "El usuario no existe." });
+                    }
+                    
                 }
             }
             catch (DbEntityValidationException ex)
             {
+                
                 // Manejar errores de validación del modelo
                 var errorMessages = ex.EntityValidationErrors
                     .SelectMany(x => x.ValidationErrors)
                     .Select(x => x.ErrorMessage);
 
                 var fullErrorMessage = string.Join("; ", errorMessages);
-                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
-
+                var exceptionMessage = string.Concat(ex.Message, " La validadciónd e errores son: ", fullErrorMessage);
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = exceptionMessage });
             }
             catch (Exception ex)
             {
                 var errorMessages = ex.InnerException;
                 var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", errorMessages);
-
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
@@ -185,7 +232,8 @@ namespace V_Vuelos.Controllers
             var consecutivo = _context.Consecutivos.FirstOrDefault(c => c.Codigo == id);
             if (consecutivo == null)
             {
-                // Manejar el caso donde el consecutivo no existe, por ejemplo, mostrar un mensaje de error o redirigir a otra página
+                // Manejar el caso donde el consecutivo no existe, por ejemplo, mostrar un mensaje de error o redirigir a otra página.
+                
                 return RedirectToAction("LstConsecutivos", "Admin"); // Redireccionar a la página principal
             }
             return View(consecutivo);
@@ -213,7 +261,17 @@ namespace V_Vuelos.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "La Descripcion actual no coincide con las registrada, vuelva a intentar." });
+                    try
+                    {
+                        throw new Exception("La Descripcion actual no coincide con las registrada, vuelva a intentar.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "La Descripcion actual no coincide con las registrada, vuelva a intentar." });
+                    }
+
+                    
                 }
             }
             catch (DbEntityValidationException ex)
@@ -225,7 +283,7 @@ namespace V_Vuelos.Controllers
 
                 var fullErrorMessage = string.Join("; ", errorMessages);
                 var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
-
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new
                 {
                     success = false,
@@ -236,7 +294,7 @@ namespace V_Vuelos.Controllers
             {
                 var errorMessages = ex.InnerException;
                 var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", errorMessages);
-
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
@@ -249,7 +307,15 @@ namespace V_Vuelos.Controllers
                 var usuarioExistente = _context.Aerolineas.FirstOrDefault(u => u.NombreAgencia == nuevoAero.NombreAgencia);
                 if (usuarioExistente != null)
                 {
-                    return Json(new { success = false, message = "Ya existe una Agencia con el mismo nombre" });
+                    try
+                    {
+                        throw new Exception("Ya existe una aerolinea con el mismo nombre.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "Ya existe una aerolinea con el mismo nombre." });
+                    }
                 }
 
                 var ActualConsecutivoPais = _context.Consecutivos;
@@ -284,12 +350,14 @@ namespace V_Vuelos.Controllers
                 // Obtener los mensajes de error de validación
                 var errorMessages = ex.EntityValidationErrors
                                       .SelectMany(x => x.ValidationErrors)
+
                                       .Select(x => x.ErrorMessage);
 
                 // Combinar los mensajes de error en una sola cadena
                 var fullErrorMessage = string.Join("; ", errorMessages);
 
                 // Devolver los mensajes de error
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
             }
 
@@ -308,7 +376,16 @@ namespace V_Vuelos.Controllers
                 var usuarioExistente = _context.Pais.FirstOrDefault(u => u.NombrePais == nuevoPais.NombrePais);
                 if (usuarioExistente != null)
                 {
-                    return Json(new { success = false, message = "Ya existe un pais con el mismo nombre" });
+                    try
+                    {
+                        throw new Exception("Ya existe un país con el mismo nombre.");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "Ya existe un país con el mismo nombre." });
+                    }
+                    
                 }
 
                 var ActualConsecutivoPais = _context.Consecutivos;
@@ -351,7 +428,7 @@ namespace V_Vuelos.Controllers
 
                 // Combinar los mensajes de error en una sola cadena
                 var fullErrorMessage = string.Join("; ", errorMessages);
-
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 // Devolver los mensajes de error
                 return Json(new { success = false, message = "Error al registrar el Pais: " + fullErrorMessage });
             }
@@ -370,7 +447,16 @@ namespace V_Vuelos.Controllers
                 var usuarioExistente = _context.Puertas.FirstOrDefault(u => u.numero == nuevaPuerta.numero);
                 if (usuarioExistente != null)
                 {
-                    return Json(new { success = false, message = "La puerta ya está registrada" });
+                    try
+                    {
+                        throw new Exception("La puerta ya está registrada");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "La puerta ya está registrada" });
+                    }
+                    
                 }
 
                 var ActualConsecutivoPuerta = _context.Consecutivos;
@@ -409,7 +495,7 @@ namespace V_Vuelos.Controllers
 
                 // Combinar los mensajes de error en una sola cadena
                 var fullErrorMessage = string.Join("; ", errorMessages);
-
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 // Devolver los mensajes de error
                 return Json(new { success = false, message = "Error al registrar Puerta: " + fullErrorMessage });
             }
@@ -425,7 +511,16 @@ namespace V_Vuelos.Controllers
                 var puerta = _context.Puertas.FirstOrDefault(p => p.Codigo == codigoPuerta);
                 if (puerta == null)
                 {
-                    return Json(new { success = false, message = "La puerta no existe" });
+                    try
+                    {
+                        throw new Exception("La puerta no existe");
+                    }
+                    catch (Exception ex)
+                    {
+                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "La puerta no existe" });
+                    }
+                    
                 }
 
                 // Cambiar el estado de la puerta
@@ -437,6 +532,8 @@ namespace V_Vuelos.Controllers
             }
             catch (Exception ex)
             {
+
+                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = "Error al cambiar el estado de la puerta: " + ex.Message });
             }
         }
@@ -481,7 +578,11 @@ namespace V_Vuelos.Controllers
 
         public ActionResult Errores()
         {
-            return View();
+           
+                // Obtener la lista de errores desde la base de datos
+                var errores = _context.Errores.ToList();
+                return View(errores);
+
         }
 
         public ActionResult AerolineasPorPais()
@@ -502,6 +603,23 @@ namespace V_Vuelos.Controllers
 
             ViewBag.puerta = puerta;
             
+            return View();
+        }
+
+        public ActionResult Puertas()
+        {
+            var puerta = _context.Puertas;
+            var consecutivo = _context.Consecutivos;
+
+            var consecutivoPuerta = consecutivo.Where(c => c.Descripcion == "puertas");
+            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
+
+            ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+
+            ViewBag.puerta = puerta;
+
             return View();
         }
     }

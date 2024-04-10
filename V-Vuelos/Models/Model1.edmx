@@ -39,9 +39,9 @@
             <PropertyRef Name="Id_Error" />
           </Key>
           <Property Name="Id_Error" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Error" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Fecha_Hora" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Error" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Fecha_Hora" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Pais">
           <Key>
@@ -215,9 +215,9 @@
             <PropertyRef Name="Id_Error" />
           </Key>
           <Property Name="Id_Error" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Error" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Fecha_Hora" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Error" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Fecha_Hora" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Pai">
           <Key>
@@ -232,7 +232,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Rol" Type="Int32" Nullable="false" />
           <Property Name="Premiso" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Rol1" Relationship="Self.FK_Permisos_Rol" FromRole="Permisos" ToRole="Rol" />
