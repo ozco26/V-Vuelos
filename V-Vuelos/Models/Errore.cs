@@ -17,6 +17,6 @@ namespace V_Vuelos.Models
         public int Id_Error { get; set; }
         public string Error { get; set; }
         public string Descripcion { get; set; }
-        public byte[] Fecha_Hora { get; set; }
+        public System.DateTime Fecha_Hora { get; set; }
     }
 }
