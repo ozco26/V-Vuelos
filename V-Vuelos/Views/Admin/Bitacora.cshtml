@@ -1,7 +1,6 @@
 ﻿@model List<V_Vuelos.Models.Vitacora>
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
-
     ViewBag.Title = "Bitacora";
 }
 
@@ -9,18 +8,18 @@
 
 <div class="col" style="text-align:center; padding:5px">
     <div class="search-bar">
-        <input type="text" placeholder="Buscar usuario...">
+        <input type="text" id="usuarioFilter" placeholder="Buscar usuario...">
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Buscar fecha...">
+        <input type="text" id="fechaFilter" placeholder="Buscar fecha...">
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Buscar tipo...">
+        <input type="text" id="tipoFilter" placeholder="Buscar tipo...">
     </div>
-    <button>Filtrar</button>
+    <button onclick="filtrar()">Filtrar</button>
     <br />
     <div style="overflow-x:auto;">
-        <table class="table table-striped; text-align:center">
+        <table id="bitacoraTable" class="table table-striped; text-align:center">
             <tr>
                 <th>ID</th>
                 <th>Usuario</th>
@@ -44,4 +43,32 @@
             }
         </table>
     </div>
-    </div>
+</div>
+
+<script>function filtrar() {
+        var usuario = document.getElementById("usuarioFilter").value.toUpperCase();
+        var fecha = document.getElementById("fechaFilter").value.toUpperCase();
+        var tipo = document.getElementById("tipoFilter").value.toUpperCase();
+        var table = document.getElementById("bitacoraTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var tdUsuario = tr[i].getElementsByTagName("td")[1];
+            var tdFecha = tr[i].getElementsByTagName("td")[2];
+            var tdTipo = tr[i].getElementsByTagName("td")[4];
+
+            if (tdUsuario && tdFecha && tdTipo) {
+                var usuarioText = tdUsuario.textContent || tdUsuario.innerText;
+                var fechaText = tdFecha.textContent || tdFecha.innerText;
+                var tipoText = tdTipo.textContent || tdTipo.innerText;
+
+                if (usuarioText.toUpperCase().indexOf(usuario) > -1 &&
+                    fechaText.toUpperCase().indexOf(fecha) > -1 &&
+                    tipoText.toUpperCase().indexOf(tipo) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }</script>
