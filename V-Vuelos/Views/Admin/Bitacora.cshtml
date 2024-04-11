@@ -1,4 +1,4 @@
-﻿
+﻿@model List<V_Vuelos.Models.Vitacora>
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
@@ -19,23 +19,29 @@
     </div>
     <button>Filtrar</button>
     <br />
-    <table class="table table-striped; text-align:center">
-        <tr>
-            <th>Usuario</th>
-            <th>Fecha y hora</th>
-            <th>Código del registro</th>
-            <th>Tipo</th>
-            <th>Descripción</th>
-            <th>Registro en detalle</th>
-        </tr>
-        <tr>
-            <td>Fulanito</td>
-            <td>04/04/2024 11:20:33 a.m.</td>
-            <td>AE-01</td>
-            <td>Eliminar</td>
-            <td>Se elimina el registro AE-01</td>
-            <td>Codigo=AE-01|Nombre:Fulanito</td>
-
-        </tr>
-    </table>
-</div>
+    <div style="overflow-x:auto;">
+        <table class="table table-striped; text-align:center">
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Fecha y hora</th>
+                <th>Código del registro</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Registro en detalle</th>
+            </tr>
+            @foreach (var vitacora in Model)
+            {
+                <tr class="errorRow">
+                    <td>@vitacora.Id</td>
+                    <td>@vitacora.NombreUsuario</td>
+                    <td>@vitacora.Fecha_Hora</td>
+                    <td>@vitacora.CodigoRegistro</td>
+                    <td>@vitacora.Tipo</td>
+                    <td>@vitacora.Descripcion</td>
+                    <td>@(vitacora.Detalle.Length > 50 ? vitacora.Detalle.Substring(0, 50) + "..." : vitacora.Detalle)</td>
+                </tr>
+            }
+        </table>
+    </div>
+    </div>
