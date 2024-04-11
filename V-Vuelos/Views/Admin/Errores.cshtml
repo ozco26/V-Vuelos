@@ -1,7 +1,6 @@
 ﻿@model List<V_Vuelos.Models.Errore>
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
-
     ViewBag.Title = "Errores";
 }
 
@@ -13,10 +12,11 @@
     <input type="date" id="fechaInicio">
     <label for="fechaFin">Fecha de fin:</label>
     <input type="date" id="fechaFin">
-    <button class="btn-danger">Buscar</button>
+    <button class="btn btn-danger" id="btnFiltrar">Filtrar</button>
+    <button class="btn btn-success" id="btnDFiltrar">Mostrar Todos</button>
 </fieldset>
 
-<<table class="table table-striped">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Fecha y Hora</th>
@@ -27,7 +27,7 @@
     <tbody>
         @foreach (var error in Model)
         {
-            <tr>
+            <tr class="errorRow" data-fecha="@error.Fecha_Hora">
                 <td>@error.Fecha_Hora</td>
                 <td>@error.Error</td>
                 <td>@error.Descripcion</td>
@@ -35,3 +35,35 @@
         }
     </tbody>
 </table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#btnFiltrar').click(function () {
+                var fechaInicio = $('#fechaInicio').val();
+                var fechaFin = $('#fechaFin').val();
+
+                if (!fechaInicio || !fechaFin) {
+                    alert("Introduzca ambos rangos");
+                    return;
+                }
+
+                var fechaInicioDate = new Date(fechaInicio);
+                var fechaFinDate = new Date(fechaFin);
+
+                $('.errorRow').each(function () {
+                    var fechaError = new Date($(this).data('fecha'));
+                    if (fechaError >= fechaInicioDate && fechaError <= fechaFinDate) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('#btnDFiltrar').click(function () {
+                $('.errorRow').show(); // Mostrar todas las filas nuevamente
+            });
+        });
+    </script>
+}

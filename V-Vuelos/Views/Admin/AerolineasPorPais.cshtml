@@ -1,14 +1,11 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
-
     ViewBag.Title = "Aerolineas Por Pais";
 }
 
-<h2>AerolineasPorPais</h2>
+<h2>Aerolineas Por Pais</h2>
 
 <h2>Lista de Agencias</h2>
-
 
 <label for="filtroPais">Filtrar por país:</label>
 <select id="filtroPais">
@@ -16,9 +13,7 @@
     <option value="Italia">Italia</option>
     <option value="España">España</option>
     <option value="Francia">Francia</option>
-
 </select>
-
 
 <table id="tablaAgencias" border="1" class="table table-striped">
     <tbody id="cuerpoTabla">
@@ -29,7 +24,6 @@
             <th>Imagen</th>
         </tr>
 
-
         <tr>
             <td>001</td>
             <td>Iberia</td>
@@ -38,3 +32,21 @@
         </tr>
     </tbody>
 </table>
+
+<script>document.getElementById("filtroPais").addEventListener("change", function() {
+        var selectedPais = this.value.toUpperCase();
+        var table = document.getElementById("tablaAgencias");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var tdPais = tr[i].getElementsByTagName("td")[2];
+            if (tdPais) {
+                var paisText = tdPais.textContent || tdPais.innerText;
+                if (selectedPais === "" || paisText.toUpperCase() === selectedPais) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    });</script>

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.IO;
@@ -12,6 +14,7 @@ using V_Vuelos.Filter;
 using V_Vuelos.Models;
 
 
+
 namespace V_Vuelos.Controllers
 {
     public class AdminController : Controller
@@ -19,6 +22,7 @@ namespace V_Vuelos.Controllers
         private readonly V_vuelos_ProyectoEntities _context;
 
         public AdminController() => _context = new V_vuelos_ProyectoEntities(); //  contexto de base de datos
+
 
         private void RegistrarError(Exception ex , string controlador,string accion)
         {
@@ -37,7 +41,28 @@ namespace V_Vuelos.Controllers
             }
         }
     
+        private void RegistroBitacora(string codigo, string tipo, string descripcion, string detalle)
+        {
+            using (var context = _context)
+            {
 
+                string NombreUsuario = (Session["User"] as Usuario)?.Nombre_Usuario;
+                DateTime fechaActual = DateTime.Now;
+                
+                var bitacoralog = new Vitacora
+                {
+                    NombreUsuario = NombreUsuario,
+                    Fecha_Hora = fechaActual,
+                    CodigoRegistro = codigo,
+                    Tipo = tipo,
+                    Descripcion = descripcion,
+                    Detalle = detalle
+                };
+
+                context.Vitacoras.Add(bitacoralog);
+                context.SaveChanges();
+            }
+        }
 
     //Visualiza la pantalla Bienvenidos
     [AuthorizeUser(idOperation: 1)]
@@ -73,6 +98,10 @@ namespace V_Vuelos.Controllers
                 var usuario = _context.Usuarios.FirstOrDefault(u => u.Id_Usuario == usuarioId);
                 usuario.Rol = rol;
                 _context.SaveChanges();
+
+
+                RegistroBitacora("", "Modificar", "Modificación sobre rol de usuario", "IdREgistro= " + usuarioId + "|Rol= " + rol);
+
 
                 //Devolvemos un código de éxito
                 return Json(new { success = true });
@@ -119,7 +148,7 @@ namespace V_Vuelos.Controllers
                 // Agregar nuevo usuario a la base de datos
                 _context.Usuarios.Add(nuevoUsuario);
                 _context.SaveChanges();
-
+                RegistroBitacora("", "Agregar", "Creación de usuario", "Usuario= " + nuevoUsuario.Nombre_Usuario +"|Correo= "+nuevoUsuario.Correo +"|PreguntaSeg= "+nuevoUsuario.PreguntaSeguridad+"|RespuestaSeg"+nuevoUsuario.RespuestaSeguridad);
                 // Devolver un código de éxito
                 return Json(new { success = true, message = "Usuario creado correctamente." });
             }
@@ -162,6 +191,7 @@ namespace V_Vuelos.Controllers
                         usuarioExistente.Contrasenia = ContraseniaActual;
 
                         _context.SaveChanges();
+                        RegistroBitacora("", "Modificar", "Modificación Contrasenna", "Usuario= " + Nombre_Usuario );
                         // El password es igual, se cambia
                         return Json(new { success = true, message = "La contraseña ha sido cambiada correctamente." });
                     }
@@ -215,6 +245,7 @@ namespace V_Vuelos.Controllers
             }
         }
 
+        //visualiza lista de consecutivos
         [AuthorizeUser(idOperation: 3)]
         public ActionResult LstConsecutivos()
         {
@@ -226,19 +257,19 @@ namespace V_Vuelos.Controllers
             return View(model);
         }
 
+        //visualiza pagina de editconsecutivos
         [AuthorizeUser(idOperation: 3)]
         public ActionResult EditConsecutivo(int id)
         {
             var consecutivo = _context.Consecutivos.FirstOrDefault(c => c.Codigo == id);
             if (consecutivo == null)
-            {
-                // Manejar el caso donde el consecutivo no existe, por ejemplo, mostrar un mensaje de error o redirigir a otra página.
-                
+            {              
                 return RedirectToAction("LstConsecutivos", "Admin"); // Redireccionar a la página principal
             }
             return View(consecutivo);
         }
 
+        //editalinea de consecutivos
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult EditaLineaConsecutivo(string Descripcion, bool PoseePrefijo, string Prefijo, int Consecutivo1, bool PoseeRango, int RangoInicial, int RangoFinal)
@@ -256,7 +287,7 @@ namespace V_Vuelos.Controllers
                     descripcionBD.RangoFinal = RangoFinal;
 
                     _context.SaveChanges();
-                    // El password es igual, se cambia
+                    RegistroBitacora(Prefijo+"-"+Consecutivo1, "Modificar", "Modificación consecutivo", "Descripción= " +Descripcion +"|Prefijo= "+Prefijo+"|Consecutivo= "+Consecutivo1+"|RangoInicial= "+RangoInicial+"|RangoFinal= "+RangoFinal);
                     return Json(new { success = true, message = "La tabla Consecutivo ha sido Modificada correctamente." });
                 }
                 else
@@ -326,23 +357,29 @@ namespace V_Vuelos.Controllers
 
                 var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
 
-                var nuevoConsecutivo = new Consecutivo
-                {
-                    Descripcion = "aerolineas", // Establecer la descripción
-                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
-                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
-                    Consecutivo1 = numeroConsecutivo,
-                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
-                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
-                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
-                };
+                //var nuevoConsecutivo = new Consecutivo
+                //{
+                //    Descripcion = "aerolineas", // Establecer la descripción
+                //    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                //    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
+                //    Consecutivo1 = numeroConsecutivo,
+                //    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                //    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                //    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                //};
 
                 // Agregar nuevo usuario a la base de datos
                 _context.Aerolineas.Add(nuevoAero);
-                _context.Consecutivos.Add(nuevoConsecutivo);
-                _context.SaveChanges();
 
+                var descripcionBD = _context.Consecutivos.FirstOrDefault(d => d.Descripcion == "aerolineas");
+                if (descripcionBD != null)
+                {
+                    descripcionBD.Consecutivo1 = numeroConsecutivo;
+
+                    _context.SaveChanges();
+                }
                 // Devolver un código de éxito
+                RegistroBitacora(ultimoPrefijoPais + "-" + numeroConsecutivo, "Agregar", "Agregar aerolinea", "|codigo= " + nuevoAero.CodigoAerolinea+ "|Nombre= " +nuevoAero.NombreAgencia+ "|Imagen= "+nuevoAero.Imagen);
                 return Json(new { success = true, message = "Aerolinea registrada con exito" });
             }
             catch (DbEntityValidationException ex)
@@ -398,23 +435,31 @@ namespace V_Vuelos.Controllers
 
 
 
-                var nuevoConsecutivo = new Consecutivo
-                {
-                    Descripcion = "paises", // Establecer la descripción
-                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
-                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false, 
-                    Consecutivo1 = numeroConsecutivo,
-                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
-                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
-                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
-                };
+                //var nuevoConsecutivo = new Consecutivo
+                //{
+                //    Descripcion = "paises", // Establecer la descripción
+                //    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                //    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false, 
+                //    Consecutivo1 = numeroConsecutivo,
+                //    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                //    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                //    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                //};
 
 
 
                 // Agregar nuevo usuario a la base de datos
                 _context.Pais.Add(nuevoPais);
-                _context.Consecutivos.Add(nuevoConsecutivo);
+
+                var descripcionBD = _context.Consecutivos.FirstOrDefault(d => d.Descripcion == "paises");
+                if (descripcionBD != null)
+                {
+                    descripcionBD.Consecutivo1 = numeroConsecutivo;
+
+                    _context.SaveChanges();
+                }
                 _context.SaveChanges();
+                RegistroBitacora(ultimoPrefijoPais + "-" + numeroConsecutivo, "Agregar", "Agregar Pais", "|Codigo=" + nuevoPais.CodigoPais+"|Nombre= " + nuevoPais.NombrePais + "|Imagen= " + nuevoPais.Imagen);
 
                 // Devolver un código de éxito
                 return Json(new { success = true, message = "Pais registrado con exito" });
@@ -467,21 +512,30 @@ namespace V_Vuelos.Controllers
 
                 var numeroConsecutivo = ultimoConsecutivo != null ? Convert.ToInt32(ultimoConsecutivo.Consecutivo1) + 1 : 1;
 
-                var nuevoConsecutivo = new Consecutivo
-                {
-                    Descripcion = "puertas", // Establecer la descripción
-                    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
-                    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
-                    Consecutivo1 = numeroConsecutivo,
-                    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
-                    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
-                    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
-                };
+                //var nuevoConsecutivo = new Consecutivo
+                //{
+                //    Descripcion = "puertas", // Establecer la descripción
+                //    Prefijo = ultimoConsecutivo?.Prefijo, // Establecer el prefijo (utilizando el operador de navegación segura)
+                //    PoseePrefijo = ultimoConsecutivo?.PoseePrefijo ?? false,
+                //    Consecutivo1 = numeroConsecutivo,
+                //    PoseeRango = ultimoConsecutivo?.PoseeRango ?? false, // Establecer si posee rango (utilizando el operador de navegación segura)
+                //    RangoInicial = ultimoConsecutivo?.RangoInicial, // Establecer el rango inicial (utilizando el operador de navegación segura)
+                //    RangoFinal = ultimoConsecutivo?.RangoFinal // Establecer el rango final (utilizando el operador de navegación segura)
+                //};
 
                 // Agregar nuevo usuario a la base de datos
                 _context.Puertas.Add(nuevaPuerta);
-                _context.Consecutivos.Add(nuevoConsecutivo);
+                //_context.Consecutivos.Add(nuevoConsecutivo);
+
+                var descripcionBD = _context.Consecutivos.FirstOrDefault(d => d.Descripcion == "puertas");
+                if (descripcionBD != null)
+                {
+                    descripcionBD.Consecutivo1 = numeroConsecutivo;
+
+                    _context.SaveChanges();
+                }
                 _context.SaveChanges();
+                RegistroBitacora(ultimoPrefijoPuerta + "-" + numeroConsecutivo, "Agregar", "Agregar Puerta", "Codigo=" + nuevaPuerta.Codigo + "|Nombre= " + nuevaPuerta.numero + "|Estado= " + nuevaPuerta.Detalle);
 
                 // Devolver un código de éxito
                 return Json(new { success = true, message = "Puerta registrada con exito" });
@@ -573,7 +627,8 @@ namespace V_Vuelos.Controllers
         
         public ActionResult Bitacora()
         {
-            return View();
+            var vitacora = _context.Vitacoras.ToList();
+            return View(vitacora);
         }
 
         public ActionResult Errores()

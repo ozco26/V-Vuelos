@@ -1,7 +1,6 @@
-﻿
+﻿@model List<V_Vuelos.Models.Vitacora>
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
-
     ViewBag.Title = "Bitacora";
 }
 
@@ -9,33 +8,67 @@
 
 <div class="col" style="text-align:center; padding:5px">
     <div class="search-bar">
-        <input type="text" placeholder="Buscar usuario...">
+        <input type="text" id="usuarioFilter" placeholder="Buscar usuario...">
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Buscar fecha...">
+        <input type="text" id="fechaFilter" placeholder="Buscar fecha...">
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Buscar tipo...">
+        <input type="text" id="tipoFilter" placeholder="Buscar tipo...">
     </div>
-    <button>Filtrar</button>
+    <button onclick="filtrar()">Filtrar</button>
     <br />
-    <table class="table table-striped; text-align:center">
-        <tr>
-            <th>Usuario</th>
-            <th>Fecha y hora</th>
-            <th>Código del registro</th>
-            <th>Tipo</th>
-            <th>Descripción</th>
-            <th>Registro en detalle</th>
-        </tr>
-        <tr>
-            <td>Fulanito</td>
-            <td>04/04/2024 11:20:33 a.m.</td>
-            <td>AE-01</td>
-            <td>Eliminar</td>
-            <td>Se elimina el registro AE-01</td>
-            <td>Codigo=AE-01|Nombre:Fulanito</td>
-
-        </tr>
-    </table>
+    <div style="overflow-x:auto;">
+        <table id="bitacoraTable" class="table table-striped; text-align:center">
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Fecha y hora</th>
+                <th>Código del registro</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Registro en detalle</th>
+            </tr>
+            @foreach (var vitacora in Model)
+            {
+                <tr class="errorRow">
+                    <td>@vitacora.Id</td>
+                    <td>@vitacora.NombreUsuario</td>
+                    <td>@vitacora.Fecha_Hora</td>
+                    <td>@vitacora.CodigoRegistro</td>
+                    <td>@vitacora.Tipo</td>
+                    <td>@vitacora.Descripcion</td>
+                    <td>@(vitacora.Detalle.Length > 50 ? vitacora.Detalle.Substring(0, 50) + "..." : vitacora.Detalle)</td>
+                </tr>
+            }
+        </table>
+    </div>
 </div>
+
+<script>function filtrar() {
+        var usuario = document.getElementById("usuarioFilter").value.toUpperCase();
+        var fecha = document.getElementById("fechaFilter").value.toUpperCase();
+        var tipo = document.getElementById("tipoFilter").value.toUpperCase();
+        var table = document.getElementById("bitacoraTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var tdUsuario = tr[i].getElementsByTagName("td")[1];
+            var tdFecha = tr[i].getElementsByTagName("td")[2];
+            var tdTipo = tr[i].getElementsByTagName("td")[4];
+
+            if (tdUsuario && tdFecha && tdTipo) {
+                var usuarioText = tdUsuario.textContent || tdUsuario.innerText;
+                var fechaText = tdFecha.textContent || tdFecha.innerText;
+                var tipoText = tdTipo.textContent || tdTipo.innerText;
+
+                if (usuarioText.toUpperCase().indexOf(usuario) > -1 &&
+                    fechaText.toUpperCase().indexOf(fecha) > -1 &&
+                    tipoText.toUpperCase().indexOf(tipo) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }</script>
