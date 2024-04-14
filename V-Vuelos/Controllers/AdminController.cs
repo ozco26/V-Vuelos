@@ -313,8 +313,8 @@ namespace V_Vuelos.Controllers
                     }
                     catch (Exception ex)
                     {
-                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                        return Json(new { success = false, message = "Ya existe una aerolinea con el mismo nombre." });
+                        //RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                        return Json(new { success = false, message = "Ya existe una aerolinea con el mismo nombre: "+ex });
                     }
                 }
 
@@ -357,7 +357,7 @@ namespace V_Vuelos.Controllers
                 var fullErrorMessage = string.Join("; ", errorMessages);
 
                 // Devolver los mensajes de error
-                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
+                //RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
                 return Json(new { success = false, message = "Error al registrar Aerolinea: " + fullErrorMessage });
             }
 
