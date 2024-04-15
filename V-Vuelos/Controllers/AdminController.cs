@@ -402,7 +402,7 @@ namespace V_Vuelos.Controllers
             //return Json(new { success = true, message = nuevoAero.ToString()});
         }
 
-        [AuthorizeUser(idOperation: 3)]
+        [AuthorizeUser(idOperation: 4)]
         [HttpPost]
         public ActionResult GuardarImagen(Pai nuevoPais)
         {
@@ -481,7 +481,7 @@ namespace V_Vuelos.Controllers
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
 
-        [AuthorizeUser(idOperation: 3)]
+        [AuthorizeUser(idOperation: 4)]
         [HttpPost]
         public ActionResult GuardarPuerta(Puerta nuevaPuerta)
         {
@@ -556,7 +556,7 @@ namespace V_Vuelos.Controllers
 
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
-        [AuthorizeUser(idOperation: 3)]
+        [AuthorizeUser(idOperation: 4)]
         [HttpPost]
         public ActionResult CambiarEstado(string codigoPuerta)
         {
@@ -591,7 +591,7 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al cambiar el estado de la puerta: " + ex.Message });
             }
         }
-        [AuthorizeUser(idOperation: 3)]
+        [AuthorizeUser(idOperation: 4)]
         public ActionResult Paises()
         {
             var paises = _context.Pais;
@@ -606,7 +606,7 @@ namespace V_Vuelos.Controllers
             ViewBag.Paises = paises;
             return View();
         }
-        [AuthorizeUser(idOperation: 3)]
+        [AuthorizeUser(idOperation: 4)]
         public ActionResult Aerolineas()
         {
 
@@ -624,13 +624,13 @@ namespace V_Vuelos.Controllers
             return View();
         }
 
-        
+        [AuthorizeUser(idOperation: 5)]
         public ActionResult Bitacora()
         {
             var vitacora = _context.Vitacoras.ToList();
             return View(vitacora);
         }
-
+        [AuthorizeUser(idOperation: 5)]
         public ActionResult Errores()
         {
            
@@ -639,11 +639,13 @@ namespace V_Vuelos.Controllers
                 return View(errores);
 
         }
-
+        [AuthorizeUser(idOperation: 5)]
         public ActionResult AerolineasPorPais()
         {
             return View();
         }
+
+        [AuthorizeUser(idOperation: 4)]
         public ActionResult EstadoPuertas()
         {
             var puerta = _context.Puertas;
@@ -660,7 +662,7 @@ namespace V_Vuelos.Controllers
             
             return View();
         }
-
+        [AuthorizeUser(idOperation: 5)]
         public ActionResult Puertas()
         {
             var puerta = _context.Puertas;
