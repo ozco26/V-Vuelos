@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
 using System.Web.UI;
 using V_Vuelos.Filter;
 using V_Vuelos.Models;
+
 
 
 namespace V_Vuelos.Controllers
@@ -298,6 +302,7 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
+        /*
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarAero(Aerolinea nuevoAero)
@@ -364,7 +369,7 @@ namespace V_Vuelos.Controllers
 
             //return Json(new { success = true, message = nuevoAero.ToString()});
         }
-
+        */
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarImagen(Pai nuevoPais)
@@ -552,7 +557,9 @@ namespace V_Vuelos.Controllers
             ViewBag.Paises = paises;
             return View();
         }
+
         [AuthorizeUser(idOperation: 3)]
+        /*
         public ActionResult Aerolineas()
         {
 
@@ -569,8 +576,124 @@ namespace V_Vuelos.Controllers
 
             return View();
         }
+        */
+        public async Task<ActionResult> Aerolineas()
+        {
+            try
+            {
+                string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Aerolineas";
 
-        
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync(ConsultaApi);
+
+                    // Verificar si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                        var json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            var aerolineas = JsonConvert.DeserializeObject<List<Aerolinea>>(json);
+                            Console.WriteLine("aerolineas: "+aerolineas.Count);
+                            // Obtener los datos de consecutivo de aerolíneas de la API o de la base de datos, según corresponda
+                            
+                            var ultimoPrefijoAero = await ObtenerUltimoPrefijoAeroDesdeAPI();
+                            var numeroConsecutivo = await ObtenerNumeroConsecutivoDesdeAPI();
+
+                            Console.WriteLine("Error: "+ultimoPrefijoAero+" y otro error: "+numeroConsecutivo);
+
+                            // Asignar los datos al ViewBag
+                            ViewBag.UltimoPrefijoAero = ultimoPrefijoAero;
+                            ViewBag.NumeroConsecutivo = numeroConsecutivo;
+                            ViewBag.Aerolineas = aerolineas;
+
+                            // Devolver la vista con los datos
+                            return View(ViewBag);
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            // Manejar la excepción de deserialización JSON
+                            Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                            return View("Error", "Error al procesar los datos recibidos.");
+                        }
+                    }
+                    else
+                    {
+                        // Si la solicitud no fue exitosa, devolver una vista de error
+                        return View("Error");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepción relacionada con la solicitud HTTP
+                Console.WriteLine("Error al realizar la solicitud HTTP: " + ex.Message);
+                return View("Error", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Capturar cualquier otra excepción no especificada
+                Console.WriteLine("Error inesperado: " + ex.Message);
+                return View("Error");
+            }
+        }
+
+        private async Task<string> ObtenerUltimoPrefijoAeroDesdeAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Prefijo-AeroLinea";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+                    return json.ToString();
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el último prefijo de aerolíneas falló.");
+                }
+            }
+        }
+
+        private async Task<int> ObtenerNumeroConsecutivoDesdeAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Consecutivo-Aerolinea";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        // Deserializar la cadena JSON en un objeto int
+                        var resultado = JsonConvert.DeserializeObject<int>(json);
+                        return resultado;
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        throw new Exception("Error al deserializar el número consecutivo de aerolíneas desde la API.", ex);
+                    }
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el número consecutivo de aerolíneas falló.");
+                }
+            }
+        }
+
+
         public ActionResult Bitacora()
         {
             return View();

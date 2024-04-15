@@ -10,8 +10,8 @@
 <script>
 
     function Limpiar() {
-        document.getElementById("NombreAgencia").value = ""; 
-        document.getElementById("Imagen").value = null; 
+        document.getElementById("NombreAgencia").value = "";
+        document.getElementById("Imagen").value = null;
     }
 
     async function leerArchivoComoBase64(file) {
@@ -99,7 +99,7 @@
                 <th></th>
             </tr>
             <tr>
-            @foreach (var Aero in ViewBag.Aerolinea)
+            @foreach (var Aero in ViewBag.Aerolineas)
             {
                 <tr>
                     <td>@Aero.CodigoAerolinea</td>
