@@ -11,15 +11,18 @@ namespace V_Vuelos.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Vitacora
     {
         public int Id { get; set; }
         public string NombreUsuario { get; set; }
-        public byte[] Fecha_Hora { get; set; }
+        public Nullable<System.DateTime> Fecha_Hora { get; set; }
         public string CodigoRegistro { get; set; }
         public string Tipo { get; set; }
+        [MaxLength]
         public string Descripcion { get; set; }
+        [MaxLength]
         public string Detalle { get; set; }
     }
 }
