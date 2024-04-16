@@ -1,4 +1,4 @@
-﻿
+
 @{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
 
@@ -12,8 +12,6 @@
         <th>Código</th>
         <th>Descripción</th>
         <th>Consecutivo</th>
-        <th>RangoIncial</th>
-        <th>RangoFinal</th>
         <th>Editar</th>
     </tr>
     @foreach (var item in Model)
@@ -21,9 +19,7 @@
         <tr>
             <td>@item.Prefijo</td>
             <td>@item.Descripcion</td>
-            <td>@item.Consecutivo1</td>
-            <td>@item.RangoInicial</td>
-            <td>@item.RangoFinal</td>
+            <td>@item.Consecutivo</td>
             <td><a href="@Url.Action("EditConsecutivo", "Admin", new { id = item.Codigo })">Editar</a></td>
         </tr>
     }

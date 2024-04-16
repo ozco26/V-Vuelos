@@ -113,9 +113,9 @@
             rol: roles
         }
 
-       /* console.log(cuerpo);*/
+       console.log(cuerpo);
          // Realizar una solicitud al servidor para actualizar los roles en la base de datos
-        fetch('/Admin/ActualizarRoles', {
+        fetch('http://localhost:5056/api/Values/ActualizarRoles', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

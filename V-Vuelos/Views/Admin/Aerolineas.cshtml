@@ -10,8 +10,8 @@
 <script>
 
     function Limpiar() {
-        document.getElementById("NombreAgencia").value = ""; 
-        document.getElementById("Imagen").value = null; 
+        document.getElementById("NombreAgencia").value = "";
+        document.getElementById("Imagen").value = null;
     }
 
     async function leerArchivoComoBase64(file) {
@@ -44,7 +44,8 @@
 
                 console.log(AeroCuerpo);
 
-                const response = await fetch('/Admin/GuardarAero', {
+                //El fetch ahora apunta a la API REST
+                const response = await fetch('http://localhost:5056/api/Values/GuardarAerolinea', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -98,7 +99,7 @@
                 <th></th>
             </tr>
             <tr>
-            @foreach (var Aero in ViewBag.Aerolinea)
+            @foreach (var Aero in ViewBag.Aerolineas)
             {
                 <tr>
                     <td>@Aero.CodigoAerolinea</td>
