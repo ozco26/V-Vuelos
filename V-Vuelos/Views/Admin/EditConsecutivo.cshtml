@@ -28,7 +28,7 @@
             <tr>
                 <td>Consecutivo</td>
                 <td>
-                    <input id="consecutive" type="text" value="@(Model.Consecutivo1)"> @*pulga dado que no puedo filtrar por nuemros ******************************************************@
+                    <input id="consecutive" type="text" value="@(Model.Consecutivo)"> @*pulga dado que no puedo filtrar por nuemros ******************************************************@
                 </td>
             </tr>
             <tr>
@@ -123,7 +123,7 @@
         var inpPref = document.getElementById("inpPref");
 
         inpPref.value = "";
-        consecutive.value = "@Model.Consecutivo1";
+        consecutive.value = "@Model.Consecutivo";
         ckbRang.checked = false;
         ckbPref.checked = false;
         inpRangInit.value = "@Model.RangoInicial";
@@ -159,7 +159,7 @@
             Descripcion: select,
             PoseePrefijo: ckbPref,
             Prefijo: inpPref.value,
-            Consecutivo1: consecutive,
+            Consecutivo: consecutive,
             PoseeRango: ckbRang.checked,
             RangoInicial: inpRangInit,
             RangoFinal: inpRangEnd
@@ -169,7 +169,7 @@
         console.log(cuerpo);
 
         try {
-            const response = await fetch('/Admin/EditaLineaConsecutivo', {
+            const response = await fetch("http://localhost:5056/api/Values/Editar-Consecutivo", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

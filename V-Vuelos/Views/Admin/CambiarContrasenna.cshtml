@@ -57,7 +57,7 @@
                 ContraseniaActual: passwordConf
             }
             console.log(cuerpo);
-            const response = await fetch('/Admin/GeneraCambioContrasenna', {
+            const response = await fetch('http://localhost:5056/api/Values/GeneraCambioContrasenna', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

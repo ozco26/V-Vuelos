@@ -6,6 +6,7 @@ using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -58,13 +59,52 @@ namespace V_Vuelos.Controllers
 
         }
 
+
+
+        //Usuarios
+
+
+
+
         //Metodo cargar pagina lsitando usuarios
         [AuthorizeUser(idOperation: 2)]
-        public ActionResult VerUsuarios()
+        public async Task<ActionResult> VerUsuarios()
         {
-            var usuarios = _context.Usuarios.ToList();
-            return View(usuarios);
+
+            string ConsultaApi = "http://localhost:5056/api/Values/VerUsuarios";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        var model = JsonConvert.DeserializeObject<List<Usuario>>(json);
+
+                        return View(model);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                        return View("Error", "Error al procesar los datos recibidos.");
+                    }
+                }
+                else
+                {
+                    // Si la solicitud no fue exitosa, devolver una vista de error
+                    return View("Error");
+                }
+            }
         }
+
+
+
 
 
         //Metodo dentro de ver usuarios, para cambiar rol en BD
@@ -97,53 +137,6 @@ namespace V_Vuelos.Controllers
             return View();
         }
 
-
-        //verifica la contraseña con la que el usuario introdujo para despues cargar en BD
-        [AuthorizeUser(idOperation: 2)]
-        [HttpPost]
-        public ActionResult CrearUsuarioNuevo(Usuario nuevoUsuario)
-        {
-            try
-            {
-                // Verifica si el nombre de usuario ya está en uso
-                var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.Nombre_Usuario == nuevoUsuario.Nombre_Usuario);
-                if (usuarioExistente != null)
-                {
-                    try
-                    {
-                        throw new Exception("El nombre de usuario ya está en uso.");
-                    }
-                    catch (Exception ex)
-                    {
-                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                        return Json(new { success = false, message = "El nombre de usuario ya está en uso." });
-                    }
-                }
-
-                // Agregar nuevo usuario a la base de datos
-                _context.Usuarios.Add(nuevoUsuario);
-                _context.SaveChanges();
-
-                // Devolver un código de éxito
-                return Json(new { success = true, message = "Usuario creado correctamente." });
-            }
-            catch (DbEntityValidationException ex)
-            {
-                // Manejar errores de validación del modelo
-                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                var errorMessage = ex.EntityValidationErrors
-                                      .SelectMany(x => x.ValidationErrors)
-                                      .Select(x => x.ErrorMessage);
-                return Json(new { success = false, message = "Error al crear usuario: " + ex.Message });
-            }
-            catch (Exception ex)
-            {
-                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                // Manejar otros errores
-                return Json(new { success = false, message = "Error al crear el usuario: " + ex.Message });
-            }
-        }
-
         //vista de CAmbiar Contraseña
         [AuthorizeUser(idOperation: 1)]
         public ActionResult CambiarContrasenna()
@@ -151,98 +144,90 @@ namespace V_Vuelos.Controllers
             return View();
         }
 
-        //busca el usuario, comprueba password con BD y guarda en BD
-        [AuthorizeUser(idOperation: 1)]
-        public ActionResult GeneraCambioContrasenna(string Nombre_Usuario, string ContraseniaAnterior, string ContraseniaActual)
-        {
-            try
-            {
-                var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.Nombre_Usuario == Nombre_Usuario);
-                if (usuarioExistente != null)
-                {
-                    // El usuario existe, ahora verifica si el password es igual al anterior por seguridad
-                    if (usuarioExistente.Contrasenia == ContraseniaAnterior)
-                    {
-                        usuarioExistente.Contrasenia = ContraseniaActual;
 
-                        _context.SaveChanges();
-                        // El password es igual, se cambia
-                        return Json(new { success = true, message = "La contraseña ha sido cambiada correctamente." });
-                    }
-                    else
+        //Consecutivos
+
+
+
+        [AuthorizeUser(idOperation: 3)]
+        public async Task<ActionResult> LstConsecutivos()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Consecutivos";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
                     {
-                        try
-                        {
-                            throw new Exception("La contraseña actual no coincide con la registrada, vuelva a intentar.");
-                        }
-                        catch (Exception ex)
-                        {
-                            RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                            return Json(new { success = false, message = "La contraseña actual no coincide con la registrada, vuelva a intentar." });
-                        }
-                       
+                        var model = JsonConvert.DeserializeObject<List<Consecutivos>>(json);
+
+                        return View(model);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                        return View("Error", "Error al procesar los datos recibidos.");
                     }
                 }
                 else
                 {
-                    try
-                    {
-                        throw new Exception("El usuario no existe.");
-                    }
-                    catch (Exception ex)
-                    {
-                        RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                        return Json(new { success = false, message = "El usuario no existe." });
-                    }
-                    
+                    // Si la solicitud no fue exitosa, devolver una vista de error
+                    return View("Error");
                 }
             }
-            catch (DbEntityValidationException ex)
-            {
-                
-                // Manejar errores de validación del modelo
-                var errorMessages = ex.EntityValidationErrors
-                    .SelectMany(x => x.ValidationErrors)
-                    .Select(x => x.ErrorMessage);
-
-                var fullErrorMessage = string.Join("; ", errorMessages);
-                var exceptionMessage = string.Concat(ex.Message, " La validadciónd e errores son: ", fullErrorMessage);
-                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                return Json(new { success = false, message = exceptionMessage });
-            }
-            catch (Exception ex)
-            {
-                var errorMessages = ex.InnerException;
-                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", errorMessages);
-                RegistrarError(ex, this.ControllerContext.RouteData.Values["controller"].ToString(), this.ControllerContext.RouteData.Values["action"].ToString());
-                return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
-            }
+            
         }
 
-        [AuthorizeUser(idOperation: 3)]
-        public ActionResult LstConsecutivos()
+
+        public async Task<ActionResult> EditConsecutivo(int id)
         {
-            var model = _context.Consecutivos
-                       .GroupBy(c => c.Descripcion)
-                       .Select(g => g.OrderByDescending(c => c.Codigo).FirstOrDefault())
-                       .ToList();
+            string ConsultaApi = $"http://localhost:5056/api/Values/Obtener-Consecutivo/{id}";
 
-            return View(model);
-        }
-
-        [AuthorizeUser(idOperation: 3)]
-        public ActionResult EditConsecutivo(int id)
-        {
-            var consecutivo = _context.Consecutivos.FirstOrDefault(c => c.Codigo == id);
-            if (consecutivo == null)
+            using (var client = new HttpClient())
             {
-                // Manejar el caso donde el consecutivo no existe, por ejemplo, mostrar un mensaje de error o redirigir a otra página.
-                
-                return RedirectToAction("LstConsecutivos", "Admin"); // Redireccionar a la página principal
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta JSON y convertirla en un objeto Consecutivo
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        var consecutivo = JsonConvert.DeserializeObject<Consecutivos>(json);
+
+                        if (consecutivo == null)
+                        {
+                            return RedirectToAction("LstConsecutivos", "Admin"); // Redireccionar a la página principal
+                        }
+
+                        return View(consecutivo);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                        return View("Error", "Error al procesar los datos recibidos.");
+                    }
+                }
+                else
+                {
+                    // Si la solicitud no fue exitosa, devolver una vista de error
+                    return View("Error");
+                }
             }
-            return View(consecutivo);
         }
 
+
+        /*
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult EditaLineaConsecutivo(string Descripcion, bool PoseePrefijo, string Prefijo, int Consecutivo1, bool PoseeRango, int RangoInicial, int RangoFinal)
@@ -254,7 +239,7 @@ namespace V_Vuelos.Controllers
                 {
                     descripcionBD.PoseePrefijo = PoseePrefijo;
                     descripcionBD.Prefijo = Prefijo;
-                    descripcionBD.Consecutivo1 = Consecutivo1;
+                    descripcionBD.Consecutivo = Consecutivo1;
                     descripcionBD.PoseeRango = PoseeRango;
                     descripcionBD.RangoInicial = RangoInicial;
                     descripcionBD.RangoFinal = RangoFinal;
@@ -302,7 +287,7 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al editar contraseña: " + exceptionMessage });
             }
         }
-        /*
+
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarAero(Aerolinea nuevoAero)
@@ -369,7 +354,7 @@ namespace V_Vuelos.Controllers
 
             //return Json(new { success = true, message = nuevoAero.ToString()});
         }
-        */
+        
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarImagen(Pai nuevoPais)
@@ -440,7 +425,7 @@ namespace V_Vuelos.Controllers
 
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
-
+        
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult GuardarPuerta(Puerta nuevaPuerta)
@@ -507,6 +492,7 @@ namespace V_Vuelos.Controllers
 
             //return Json(new { success = true, message = "Se guardó la imagen"});
         }
+        
         [AuthorizeUser(idOperation: 3)]
         [HttpPost]
         public ActionResult CambiarEstado(string codigoPuerta)
@@ -542,6 +528,8 @@ namespace V_Vuelos.Controllers
                 return Json(new { success = false, message = "Error al cambiar el estado de la puerta: " + ex.Message });
             }
         }
+        */
+        /*
         [AuthorizeUser(idOperation: 3)]
         public ActionResult Paises()
         {
@@ -558,8 +546,9 @@ namespace V_Vuelos.Controllers
             return View();
         }
 
+        //Aerolinea
         [AuthorizeUser(idOperation: 3)]
-        /*
+        /
         public ActionResult Aerolineas()
         {
 
@@ -577,6 +566,38 @@ namespace V_Vuelos.Controllers
             return View();
         }
         */
+        /*
+        public ActionResult EstadoPuertas()
+        {
+            var puerta = _context.Puertas;
+            var consecutivo = _context.Consecutivos;
+
+            var consecutivoPuerta = consecutivo.Where(c => c.Descripcion == "puertas");
+            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
+
+            ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+
+            ViewBag.puerta = puerta;
+
+            return View();
+        }
+        */
+
+
+
+
+
+
+        //Aerolineas
+
+
+
+
+
+
+
         public async Task<ActionResult> Aerolineas()
         {
             try
@@ -694,40 +715,316 @@ namespace V_Vuelos.Controllers
         }
 
 
+
+        //Paises
+
+
+
+        public async Task<ActionResult> Paises()
+        {
+            try
+            {
+                string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Paises";
+
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync(ConsultaApi);
+
+                    // Verificar si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                        var json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            var paises = JsonConvert.DeserializeObject<List<Pai>>(json);
+                           // Console.WriteLine("aerolineas: " + aerolineas.Count);
+                            // Obtener los datos de consecutivo de aerolíneas de la API o de la base de datos, según corresponda
+
+                            var ultimoPrefijoPais = await ObtenerUltimoPrefijoPaisDesdeAPI();
+                            var numeroConsecutivo = await ObtenerNumeroConsecutivoDesdePaisAPI();
+
+                            //Console.WriteLine("Error: " + ultimoPrefijoPais + " y otro error: " + numeroConsecutivo);
+
+                            // Asignar los datos al ViewBag
+                            ViewBag.UltimoPrefijoPais = ultimoPrefijoPais;
+                            ViewBag.NumeroConsecutivo = numeroConsecutivo;
+                            ViewBag.paises = paises;
+
+                            // Devolver la vista con los datos
+                            return View(ViewBag);
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            // Manejar la excepción de deserialización JSON
+                            Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                            return View("Error", "Error al procesar los datos recibidos.");
+                        }
+                    }
+                    else
+                    {
+                        // Si la solicitud no fue exitosa, devolver una vista de error
+                        return View("Error");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepción relacionada con la solicitud HTTP
+                Console.WriteLine("Error al realizar la solicitud HTTP: " + ex.Message);
+                return View("Error", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Capturar cualquier otra excepción no especificada
+                Console.WriteLine("Error inesperado: " + ex.Message);
+                return View("Error");
+            }
+        }
+
+        private async Task<string> ObtenerUltimoPrefijoPaisDesdeAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Prefijo-Paises";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+                    return json.ToString();
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el último prefijo de paises falló.");
+                }
+            }
+        }
+
+        private async Task<int> ObtenerNumeroConsecutivoDesdePaisAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Consecutivo-Paises";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        // Deserializar la cadena JSON en un objeto int
+                        var resultado = JsonConvert.DeserializeObject<int>(json);
+                        return resultado;
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        throw new Exception("Error al deserializar el número consecutivo de aerolíneas desde la API.", ex);
+                    }
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el número consecutivo de paises falló.");
+                }
+            }
+        }
+
+
+        public async Task<ActionResult> EstadoPuertas()
+        {
+            try
+            {
+                string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Puertas";
+
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync(ConsultaApi);
+
+                    // Verificar si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                        var json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            var aerolineas = JsonConvert.DeserializeObject<List<Puerta>>(json);
+                            Console.WriteLine("Puerta: " + aerolineas.Count);
+                            // Obtener los datos de consecutivo de aerolíneas de la API o de la base de datos, según corresponda
+
+                            var ultimoPrefijoPuerta = await ObtenerUltimoPrefijoPuertaDesdeAPI();
+                            var numeroConsecutivo = await ObtenerNumeroConsecutivoPuertaDesdeAPI();
+
+                            Console.WriteLine("Error: " + ultimoPrefijoPuerta + " y otro error: " + numeroConsecutivo);
+
+                            // Asignar los datos al ViewBag
+                            ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
+                            ViewBag.NumeroConsecutivo = numeroConsecutivo;
+                            ViewBag.Puerta = aerolineas;
+
+                            // Devolver la vista con los datos
+                            return View(ViewBag);
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            // Manejar la excepción de deserialización JSON
+                            Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                            return View("Error", "Error al procesar los datos recibidos.");
+                        }
+                    }
+                    else
+                    {
+                        // Si la solicitud no fue exitosa, devolver una vista de error
+                        return View("Error");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepción relacionada con la solicitud HTTP
+                Console.WriteLine("Error al realizar la solicitud HTTP: " + ex.Message);
+                return View("Error", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Capturar cualquier otra excepción no especificada
+                Console.WriteLine("Error inesperado: " + ex.Message);
+                return View("Error");
+            }
+        }
+
+        private async Task<string> ObtenerUltimoPrefijoPuertaDesdeAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Prefijo-Puerta";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+                    return json.ToString();
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el último prefijo de aerolíneas falló.");
+                }
+            }
+        }
+
+        private async Task<int> ObtenerNumeroConsecutivoPuertaDesdeAPI()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Consecutivo-Puerta";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta como una cadena
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        // Deserializar la cadena JSON en un objeto int
+                        var resultado = JsonConvert.DeserializeObject<int>(json);
+                        return resultado;
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        throw new Exception("Error al deserializar el número consecutivo de aerolíneas desde la API.", ex);
+                    }
+                }
+                else
+                {
+                    throw new Exception("La solicitud a la API para obtener el número consecutivo de aerolíneas falló.");
+                }
+            }
+        }
+
+
+
+        /*Errores
+
+        public ActionResult Errores()
+        {
+
+            // Obtener la lista de errores desde la base de datos
+            var errores = _context.Errores.ToList();
+            return View(errores);
+
+        }
+        */
+
+        public async Task<ActionResult> Errores()
+        {
+            string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Errores";
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(ConsultaApi);
+
+                // Verificar si la solicitud fue exitosa
+                if (response.IsSuccessStatusCode)
+                {
+                    // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+
+                        var Errores = JsonConvert.DeserializeObject<List<Errore>>(json);
+                        
+
+
+                        // Devolver la vista con los datos
+                        return View(Errores);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        // Manejar la excepción de deserialización JSON
+                        Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                        return View("Error", "Error al procesar los datos recibidos.");
+                    }
+                }
+                else
+                {
+                    // Si la solicitud no fue exitosa, devolver una vista de error
+                    return View("Error");
+                }
+            }
+
+        }
+
+
+
         public ActionResult Bitacora()
         {
             return View();
         }
 
-        public ActionResult Errores()
-        {
-           
-                // Obtener la lista de errores desde la base de datos
-                var errores = _context.Errores.ToList();
-                return View(errores);
-
-        }
+        
 
         public ActionResult AerolineasPorPais()
         {
             return View();
         }
-        public ActionResult EstadoPuertas()
-        {
-            var puerta = _context.Puertas;
-            var consecutivo = _context.Consecutivos;
+       
 
-            var consecutivoPuerta = consecutivo.Where(c => c.Descripcion == "puertas");
-            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
-            var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
 
-            ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
-            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+        //Puertas
 
-            ViewBag.puerta = puerta;
-            
-            return View();
-        }
 
         public ActionResult Puertas()
         {
@@ -735,11 +1032,11 @@ namespace V_Vuelos.Controllers
             var consecutivo = _context.Consecutivos;
 
             var consecutivoPuerta = consecutivo.Where(c => c.Descripcion == "puertas");
-            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo1).FirstOrDefault();
+            var ultimoConsecutivo = consecutivoPuerta.OrderByDescending(c => c.Consecutivo).FirstOrDefault();
             var ultimoPrefijoPuerta = ultimoConsecutivo?.Prefijo;
 
             ViewBag.UltimoPrefijoPuerta = ultimoPrefijoPuerta;
-            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo1;
+            ViewBag.NumeroConsecutivo = ultimoConsecutivo?.Consecutivo;
 
             ViewBag.puerta = puerta;
 

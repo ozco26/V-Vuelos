@@ -41,7 +41,7 @@
 
                 console.log(PaisCuerpo);
 
-                const response = await fetch('/Admin/GuardarImagen', {
+                const response = await fetch("http://localhost:5056/api/Values/GuardarPaises", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -91,7 +91,7 @@
                 <th>Imagen</th>
                 <th></th>
             </tr>
-            @foreach (var pais in ViewBag.Paises)
+            @foreach (var pais in ViewBag.paises)
             {
                 <tr>
                     <td>@pais.CodigoPais</td>
