@@ -11,19 +11,14 @@
     <header>
         <nav class="navbar navbar ">
             <div class="container">
-          
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <h1>V-Vuelos</h1>
-
-
-                        <li>@Html.ActionLink("Crear Cuenta", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Búsqueda de Vuelos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Reserva de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Compra de Boletos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Inicio de sesión", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Ingreso administración", "LoginAdministrativo", "AccesoAdministrativos", new { area = "" }, new { @class = "nav-link" })</li>
-
+                <a class="navbar-brand" href="/" style="font-size:x-large"><strong>V-Vuelos</strong></a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">@Html.ActionLink("Crear Cuenta", "CrearCuenta", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Inicio de sesión", "IniciarSesion", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Búsqueda de Vuelos", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Compra de Boletos", "ComprarVuelosInicio", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Ingreso administración", "LoginAdministrativo", "AccesoAdministrativos", new { area = "" }, new { @class = "nav-link" })</li>
                     </ul>
                 </div>
             </div>

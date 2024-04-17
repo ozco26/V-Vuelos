@@ -1,0 +1,49 @@
+﻿
+@{
+    if (Session["User"] == null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout_login.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>IniciarSesion</title>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Iniciar Sesión</h1>
+                <form action=@Url.Content("~/Home/LoginComercial") method="post">
+                    <label for="correo">Correo Electrónico:</label>
+                    <input type="text" id="correo" name="correo" required>
+
+                    <label for="contrasena">Contraseña:</label>
+                    <input type="password" id="contrasena" name="contrasena" required><br><br>
+                    <div class="g-recaptcha" data-sitekey="TU_CLAVE_DE_SITIO"></div><br>
+                    <button type="submit">Iniciar Sesión</button> <br>
+                    <a href="#">Olvidó su contraseña? Presione aqui para recuperar</a>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <h2>Iniciar Sesión con</h2>
+                    <button class="btn btn-danger boton-social boton-google" onclick="iniciarSesionGoogle()">Google</button><br><br>
+                    <button class="btn btn-primary boton-social boton-facebook" onclick="iniciarSesionFacebook()">Facebook</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
