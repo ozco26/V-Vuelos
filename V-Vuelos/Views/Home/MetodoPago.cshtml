@@ -1,9 +1,7 @@
-﻿
-@{
+﻿@{
     if (Session["User"] == null)
     {
         Layout = "~/Views/Shared/_Layout.cshtml";
-
     }
     else
     {
@@ -12,7 +10,6 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -26,125 +23,151 @@
             <select class="form-control" id="metodoPago" name="metodoPago">
                 <option value="tarjeta">Tarjeta de Crédito</option>
                 <option value="easyPay">Easy Pay</option>
-                <option value="easyPay">Reservar</option>
+                <option value="reserva">Reservar</option>
             </select>
+        </div>
 
-            <div class="row">
-                <div @*style="display:none*@ ;">
-                    <fieldset>
-                        <legend><strong>Tarjeta de credito Registradas</strong></legend>
-                        <div class="container">
-                            <div class="card">
-                                <div class="card-header">
-                                    <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                                    XXXXXXXXXXXX1111
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Visa</h5>
-                                </div>
-                                <div class="card-footer">
-                                    Expira: 12/2023
-                                </div>
-                            </div>
-                            <br>
-                            <div class="card mt-2">
-                                <div class="card-header">
-                                    <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                                    XXXXXXXXXXXX2222
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">MasterCard</h5>
-                                </div>
-                                <div class="card-footer">
-                                    Expira: 09/2024
-                                </div>
-                            </div>
-                            <br>
-                            <div class="card mt-2">
-                                <div class="card-header">
-                                    <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                                    XXXXXXXXXXXX3333
-                                </div>
-                                <div class="card-body">
-                                    <h5>Visa</h5>
-                                </div>
-                                <div class="card-footer">
-                                    Expira: 06/2025
-                                </div>
-                            </div>
+        <div id="tarjetaCredito" style="display: none;">
+            <fieldset>
+                <legend><strong>Tarjeta de credito Registradas</strong></legend>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
+                            XXXXXXXXXXXX1111
                         </div>
-                        <button class="btn btn-danger">Usar tarjeta seleccionada para ir a pagar</button>
-                    </fieldset>
 
-                    <div class="container">
-                        <fieldset>
-
-                            <legend>Comprar sin registrar</legend>
-                            <div class="container">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="numero">Número de Tarjeta:</label>
-                                        <input type="text" class="form-control" id="numero" name="numero"
-                                               placeholder="Ingrese el número de tarjeta" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="tipo">Tipo de Tarjeta:</label>
-                                        <select class="form-control" id="tipo" name="tipo" required>
-                                            <option value="">Seleccione el tipo de tarjeta</option>
-                                            <option value="visa">Visa</option>
-                                            <option value="mastercard">MasterCard</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="fecha">Fecha de Expiración:</label>
-                                        <input type="text" class="form-control" id="fecha" name="fecha"
-                                               placeholder="MM/AAAA" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="ccv">Número de seguridad:</label>
-                                        <input type="text" class="form-control" id="numero" name="numero"
-                                               placeholder="Ingrese el número de tarjeta" required>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-danger">Ir a pagar</button>
-
-                                </form>
-                            </div>
-
-                        </fieldset>
+                        <div class="card-body">
+                            <h5 class="card-title">Visa</h5>
+                        </div>
+                        <div class="card-footer">
+                            Expira: 12/2023
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card mt-2">
+                        <div class="card-header">
+                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
+                            XXXXXXXXXXXX2222
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">MasterCard</h5>
+                        </div>
+                        <div class="card-footer">
+                            Expira: 09/2024
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card mt-2">
+                        <div class="card-header">
+                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
+                            XXXXXXXXXXXX3333
+                        </div>
+                        <div class="card-body">
+                            <h5>Visa</h5>
+                        </div>
+                        <div class="card-footer">
+                            Expira: 06/2025
+                        </div>
                     </div>
                 </div>
-                <div @*style="display: none"*@>
+                <button class="btn btn-danger">Usar tarjeta seleccionada para ir a pagar</button>
+            </fieldset>
 
-                    <form id="formularioPago">
-                        <div id="camposEasyPay">
+            <div class="container">
+                <fieldset>
+
+                    <legend>Comprar sin registrar</legend>
+                    <div class="container">
+                        <form>
                             <div class="form-group">
-                                <label for="numeroCuenta">Número de cuenta de Easy Pay:</label>
-                                <input type="text" class="form-control" id="numeroCuenta" name="numeroCuenta">
+                                <label for="numero">Número de Tarjeta:</label>
+                                <input type="text" class="form-control" id="numero" name="numero"
+                                       placeholder="Ingrese el número de tarjeta" required>
                             </div>
                             <div class="form-group">
-                                <label for="codigoSeguridad">Código de seguridad:</label>
-                                <input type="text" class="form-control" id="codigoSeguridad" name="codigoSeguridad">
+                                <label for="tipo">Tipo de Tarjeta:</label>
+                                <select class="form-control" id="tipo" name="tipo" required>
+                                    <option value="">Seleccione el tipo de tarjeta</option>
+                                    <option value="visa">Visa</option>
+                                    <option value="mastercard">MasterCard</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="contrasena">Contraseña de la cuenta:</label>
-                                <input type="password" class="form-control" id="contrasena" name="contrasena">
+                                <label for="fecha">Fecha de Expiración:</label>
+                                <input type="text" class="form-control" id="fecha" name="fecha"
+                                       placeholder="MM/AAAA" required>
                             </div>
-                        </div><br>
 
-                        <button type="button" class="btn btn-danger" onclick="procesarPago()">Ir a Pagar</button>
-                    </form>
-                </div>
-                <div @*style="display:none"*@>
+                            <div class="form-group">
+                                <label for="ccv">Número de seguridad:</label>
+                                <input type="text" class="form-control" id="numero" name="numero"
+                                       placeholder="Ingrese el número de tarjeta" required>
+                            </div>
 
-                    <form id="formularioReservar">
-                        <h5>Usted esta realizando una reserva</h5>
-                        <p>El usuario que deberá estar 3 horas antes en la caja para recoger y pagar sus boletos de viaje</p>
-                        <button class="btn btn-danger">Reservar</button>
-                    </form>
-                </div>
+                            <button type="submit" class="btn btn-danger">Ir a pagar</button>
+
+                        </form>
+                    </div>
+
+                </fieldset>
             </div>
+        </div>
+
+        <div id="easyPay" style="display: none;">
+            <form id="formularioPago">
+                <div id="camposEasyPay">
+                    <div class="form-group">
+                        <label for="numeroCuenta">Número de cuenta de Easy Pay:</label>
+                        <input type="text" class="form-control" id="numeroCuenta" name="numeroCuenta">
+                    </div>
+                    <div class="form-group">
+                        <label for="codigoSeguridad">Código de seguridad:</label>
+                        <input type="text" class="form-control" id="codigoSeguridad" name="codigoSeguridad">
+                    </div>
+                    <div class="form-group">
+                        <label for="contrasena">Contraseña de la cuenta:</label>
+                        <input type="password" class="form-control" id="contrasena" name="contrasena">
+                    </div>
+                </div><br>
+
+                <button type="button" class="btn btn-danger" onclick="procesarPago()">Ir a Pagar</button>
+            </form>
+        </div>
+
+        <div id="reserva" style="display: none;">
+            <form id="formularioReservar">
+                <h5>Usted esta realizando una reserva</h5>
+                <p>El usuario que deberá estar 3 horas antes en la caja para recoger y pagar sus boletos de viaje</p>
+                <button class="btn btn-danger">Reservar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Obtener referencia al combo box
+        var metodoPago = document.getElementById("metodoPago");
+
+        // Agregar evento change al combo box
+        metodoPago.addEventListener("change", function () {
+            // Obtener el valor seleccionado
+            var selectedValue = metodoPago.value;
+
+            // Mostrar la sección correspondiente según el valor seleccionado
+            if (selectedValue === "tarjeta") {
+                document.getElementById("tarjetaCredito").style.display = "block";
+                document.getElementById("easyPay").style.display = "none";
+                document.getElementById("reserva").style.display = "none";
+            } else if (selectedValue === "easyPay") {
+                document.getElementById("tarjetaCredito").style.display = "none";
+                document.getElementById("easyPay").style.display = "block";
+                document.getElementById("reserva").style.display = "none";
+            } else if (selectedValue === "reserva") {
+                document.getElementById("tarjetaCredito").style.display = "none";
+                document.getElementById("easyPay").style.display = "none";
+                document.getElementById("reserva").style.display = "block";
+            }
+        });
+    </script>
 </body>
 </html>
