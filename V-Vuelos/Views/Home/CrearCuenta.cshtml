@@ -1,0 +1,179 @@
+﻿
+@{
+    if (Session["User"] == null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout_login.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CrearCuenta</title>
+</head>
+<body>
+    <div class="row align-items-center" style="padding: 4px">
+        <div class="col" style="padding:1px">
+            <div class="container">
+                <h1>Crear Cuenta</h1>
+                
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" >
+
+                    <label for="apellido1">Primer Apellido:</label>
+                    <input type="text" id="apellido1" name="apellido1" >
+
+                    <label for="apellido2">Segundo Apellido:</label>
+                    <input type="text" id="apellido2" name="apellido2" >
+
+                    <label for="correo">Correo Electrónico:</label>
+                    <input style="width: 100%; padding: 10px";" margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; 
+                           box-sizing: border-box;" type="email" id="correo" name="correo" required>
+
+                    <label for="usuario">Nombre de Usuario:</label>
+                    <input type="text" id="usuario" name="usuario" required>
+                    <button class="btn btn-secondary" type="button" onclick="verificarUsuario()">Verificar Disponibilidad</button>
+                    <div id="resultadoUsuario">
+                        <input type="checkbox" !checked id="cbxVerificarUsuario" style="display:none" disabled />
+                        <input type="text" value="" disabled style="display:none" id="inptVerificarUsuario" />
+                    </div>
+
+                    <label for="contrasena">Contraseña:</label>
+                    <input style="width: 100%; padding: 10px";" margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; 
+                           box-sizing: border-box;" type="password" id="contrasena" name="contrasena" required>
+                    <br />
+
+                    <label for="confirmar">Confirmar Contraseña:</label>
+                    <input style="width: 100%; padding: 10px";" margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;" type="password" id="confirmar" name="confirmar" >
+
+
+                    <div class="g-recaptcha" data-sitekey="TU_CLAVE_DE_SITIO"></div>
+                    <br />
+
+                    <button class="btn btn-primary" type="button" onclick="CrearUsuario_nuevo()" >Crear Cuenta</button>
+               
+            </div>
+        </div>
+        <div class="col" style="padding:1px ; text-align:center" >
+            <div class="botones">
+                <button class="btn btn-danger boton-google" onclick="iniciarSesionGoogle()">Registrarse con Google</button><br /><br />
+                <button class="btn btn-primary boton-facebook" onclick="iniciarSesionFacebook()">Registrarse con Facebook</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var regexCorreo = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        async function CrearUsuario_nuevo() {
+        try {
+            var name = document.getElementById("nombre").value.trim();
+            var apellido1 = document.getElementById("apellido1").value.trim();
+            var apellido2 = document.getElementById("apellido2").value.trim();
+            var username = document.getElementById("usuario").value.trim();
+            var password = document.getElementById("contrasena").value.trim();
+            var passwordConf = document.getElementById("confirmar").value.trim();
+            var email = document.getElementById("correo").value.trim();
+
+
+            // Verificar campos llenos
+            if (username === "" || password === "" || passwordConf === "" || email === "" || name === "" || apellido1 === "" || apellido2 === "") {
+                return alert("Todos los campos deben estar llenos");
+            }
+
+            if (document.getElementById("cbxVerificarUsuario").checked)
+            {
+
+            }
+            // Verificar coincidencia de contraseñas
+            if (password !== passwordConf) {
+                return alert("La contraseña no coincide con la confirmación");
+            }
+            // Verificar si el correo electrónico es válido
+            if (!regexCorreo.test(email)) {
+                return alert("El correo electrónico no es válido");
+            }
+
+            var cuerpo1 = {
+                Nombre_Usuario: username,
+                Rol: 6,
+                Correo: email,
+                Contrasenia: password,
+                PreguntaSeguridad: name,
+                RespuestaSeguridad: apellido1 + apellido2,
+            };
+            console.log(cuerpo1);
+
+            const response = await fetch('http://localhost:5056/api/Values/CrearUsuarioNuevo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cuerpo1)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+                var random1 = Math.floor(Math.random() * 100).toString();
+                var random2 = Math.floor(Math.random() * 100).toString();
+
+                var inputValue = random1 + " " + name + " " + apellido2 + "  //  " +
+                    apellido1 + " " + random2 + " " + name + "  //  " +
+                    apellido1 + " " + name + " " + random1;
+                document.getElementById("inptVerificarUsuario").di
+
+                document.getElementById("inptVerificarUsuario").value = inputValue;
+            }
+        } catch (error) {
+            console.error('Error:' + error);
+            alert('Error al crear usuario');
+        }
+        }
+
+        async function verificarUsuario() {
+            try {
+                var username = document.getElementById("usuario").value.trim();
+
+                // Verificar si el nombre de usuario está vacío
+                if (username === "") {
+                    return alert("Por favor ingrese un nombre de usuario");
+                }
+
+                // Aquí puedes realizar una verificación adicional si es necesario, como longitud mínima o caracteres válidos
+
+                // Hacer la solicitud al servidor para verificar la disponibilidad del nombre de usuario
+                const response = await fetch(`http://localhost:5056/api/Values/VerificarUsuario/${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                // Verificar la respuesta del servidor
+                if (data.disponible) {
+                    alert("El nombre de usuario está disponible");
+                    document.getElementById("cbxVerificarUsuario").checked == true;
+                } else {
+                    alert("El nombre de usuario ya está en uso");
+                    document.getElementById("description").value;
+                }
+            } catch (error) {
+                console.error('Error:' + error);
+                alert('Error al verificar el nombre de usuario');
+            }
+        }
+    </script>
+</body>
+</html>
