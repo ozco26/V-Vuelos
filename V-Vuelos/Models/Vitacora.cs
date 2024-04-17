@@ -17,7 +17,7 @@ namespace V_Vuelos.Models
     {
         public int Id { get; set; }
         public string NombreUsuario { get; set; }
-        public Nullable<System.DateTime> Fecha_Hora { get; set; }
+        public DateTime? Fecha_Hora { get; set; }
         public string CodigoRegistro { get; set; }
         public string Tipo { get; set; }
         [MaxLength]

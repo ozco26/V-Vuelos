@@ -41,6 +41,7 @@ namespace V_Vuelos.Filter
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 filterContext.Result = new RedirectResult("/");
             }
         }

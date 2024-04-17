@@ -279,6 +279,15 @@
     <Content Include="Views\Admin\Bitacora.cshtml" />
     <Content Include="Views\Admin\Errores.cshtml" />
     <Content Include="Views\Admin\EstadoPuertas.cshtml" />
+    <Content Include="Views\Home\BuscaVuelosLlegada.cshtml" />
+    <Content Include="Views\Home\BuscaVuelosSalida.cshtml" />
+    <Content Include="Views\Home\CambiarContrasenna.cshtml" />
+    <Content Include="Views\Home\ComprarVuelosInicio.cshtml" />
+    <Content Include="Views\Home\IniciarSesion.cshtml" />
+    <Content Include="Views\Home\CrearCuenta.cshtml" />
+    <Content Include="Views\Home\Pagar.cshtml" />
+    <Content Include="Views\Home\MetodoPago.cshtml" />
+    <Content Include="Views\Shared\_Layout_login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

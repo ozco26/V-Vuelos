@@ -119,3 +119,40 @@ input[type="submit"] {
 .card-text {
     margin-bottom: 0.5rem;
 }
+
+.botones {
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.boton-google {
+    background-color: #db4437;
+    color: #fff;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.boton-facebook {
+    background-color: #3b5998;
+    color: #fff;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .boton-google:hover,
+    .boton-facebook:hover {
+        opacity: 0.8;
+    }
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

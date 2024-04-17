@@ -1,0 +1,90 @@
+﻿
+@{
+    Layout = Layout;
+    ViewBag.Title = "Lista de Vuelos de Salida";
+    if (Session["User"] == null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout_login.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BuscaVuelosSalida</title>
+</head>
+<body>
+    
+        <div class="container">
+            <h2>Lista de vuelos salida hoy</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Vuelo</th>
+                        <th>Aerolínea</th>
+                        <th>Destino</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Puerta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LR 456</td>
+                        <td>Iberia</td>
+                        <td>Madrid</td>
+                        <td>2024-02-11</td>
+                        <td>012:30</td>
+                        <td>Salió</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>BA 789</td>
+                        <td>British Airways</td>
+                        <td>Londres</td>
+                        <td>2024-02-11</td>
+                        <td>12:45</td>
+                        <td>A Tiempo</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>LH 123</td>
+                        <td>Lufthansa</td>
+                        <td>Berlín</td>
+                        <td>2024-02-11</td>
+                        <td>16:00</td>
+                        <td>Demorado</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>AF 567</td>
+                        <td>Air France</td>
+                        <td>París</td>
+                        <td>2024-02-11</td>
+                        <td>18:20</td>
+                        <td>Confirmado</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td>AA 321</td>
+                        <td>American Airlines</td>
+                        <td>Nueva York</td>
+                        <td>2024-02-11</td>
+                        <td>20:40</td>
+                        <td>A Tiempo</td>
+                        <td>10</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+</body>
+</html>
+
