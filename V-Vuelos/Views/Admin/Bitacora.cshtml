@@ -34,7 +34,7 @@
                 <tr class="errorRow">
                     <td>@vitacora.Id</td>
                     <td>@vitacora.NombreUsuario</td>
-                    <td>@vitacora.Fecha_Hora</td>
+                    <td>@(vitacora.Fecha_Hora.HasValue ? vitacora.Fecha_Hora.Value.ToString("yyyy-MM-dd HH:mm:ss") : "")</td>
                     <td>@vitacora.CodigoRegistro</td>
                     <td>@vitacora.Tipo</td>
                     <td>@vitacora.Descripcion</td>
@@ -45,7 +45,8 @@
     </div>
 </div>
 
-<script>function filtrar() {
+<script>
+    function filtrar() {
         var usuario = document.getElementById("usuarioFilter").value.toUpperCase();
         var fecha = document.getElementById("fechaFilter").value.toUpperCase();
         var tipo = document.getElementById("tipoFilter").value.toUpperCase();
@@ -71,4 +72,5 @@
                 }
             }
         }
-    }</script>
+    }
+</script>
