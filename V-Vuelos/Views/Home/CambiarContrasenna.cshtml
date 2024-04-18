@@ -1,4 +1,4 @@
-﻿
+﻿@using V_Vuelos.Models
 @{
     Layout = Layout = "~/Views/Shared/_Layout.cshtml";
     if (Session["User"] == null)
@@ -12,101 +12,94 @@
     }
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Cambiar Contraseña</title>
-</head>
-<body>
-    <div class="container">
+<h2>Cambiar Contraseña :  @((Session["User"] as Usuario)?.Nombre_Usuario)</h2>
+<div style="text-align:center">
+    <form>
+        <table style="border-collapse: collapse; margin: 0 auto;">
+            <tr>
+                <td style="text-align: right;"><label for="password">Contraseña Actual:</label></td>
+                <td style="text-align: left;"><input type="password" id="password" name="password"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="passwordChang">Nueva Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="passwordChang" name="passwordChang"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;"><label for="passwordConf">Confirmar Contraseña:</label></td>
+                <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <button class="btn btn-primary" type="button" onclick="GeneraCambioContrasena()">Cambiar Contraseña</button>
+                    <button class="btn btn-dark" type="button" onclick="Cancelar()">Cancelar</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
 
-        <form>
-            <table style="border-collapse: collapse; margin: 0 auto;">
-                <tr>
-                    <td style="text-align: right;"><label for="password">Contraseña Actual:</label></td>
-                    <td style="text-align: left;"><input type="password" id="password" name="password"></td>
-                </tr>
-                <tr>
-                    <td style="text-align: right;"><label for="passwordChang">Nueva Contraseña:</label></td>
-                    <td style="text-align: left;"><input type="password" id="passwordChang" name="passwordChang"></td>
-                </tr>
-                <tr>
-                    <td style="text-align: right;"><label for="passwordConf">Confirmar Contraseña:</label></td>
-                    <td style="text-align: left;"><input type="password" id="passwordConf" name="passwordConf"></td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: center;">
-                        <button class="btn btn-primary" type="button" onclick="GeneraCambioContrasena()">Cambiar Contraseña</button>
-                        <button class="btn btn-dark" type="button" onclick="Cancelar()">Cancelar</button>
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    @*<input type="text" id="usuario" name="usuario" value="@((Session["User"] as Usuario)?.Nombre_Usuario)" hidden>*@
+<input type="text" id="usuario" name="usuario" value="@((Session["User"] as Usuario)?.Nombre_Usuario)" hidden>
 
-    <script>
-        async function GeneraCambioContrasena() {
-            try {
-                var password = document.getElementById("password").value.trim();
-                var passwordChang = document.getElementById("passwordChang").value.trim();
-                var passwordConf = document.getElementById("passwordConf").value.trim();
-                var user = document.getElementById("usuario").value;
+<script>
+    async function GeneraCambioContrasena() {
+        try {
+            var password = document.getElementById("password").value.trim();
+            var passwordChang = document.getElementById("passwordChang").value.trim();
+            var passwordConf = document.getElementById("passwordConf").value.trim();
+            var user = document.getElementById("usuario").value;
 
-                if (password == "" || passwordChang == "" || passwordConf == "") {
-                    return alert("Debe de rellenar todos los campos");
-                }
-                if (passwordChang != passwordConf) {
-                    return alert("Las contreaseñas no coinsiden");
-                }
-                if (password == passwordChang) {
-                    return alert("La contraseña nueva debe de ser diferente a la actual")
-                }
-
-                var cuerpo = {
-                    Nombre_Usuario: user,
-                    ContraseniaAnterior: password,
-                    ContraseniaActual: passwordConf
-                }
-                console.log(cuerpo);
-                const response = await fetch('http://localhost:5056/api/Values/GeneraCambioContrasenna', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(cuerpo)
-                });
-
-                const data = await response.json();
-                console.log(data.success + ', ' + data.message);
-                if (data.success) {
-                    alert(data.message);
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error:' + error);
-
+            if (password == "" || passwordChang == "" || passwordConf == "") {
+                return alert("Debe de rellenar todos los campos");
             }
+            if (passwordChang != passwordConf) {
+                return alert("Las contreaseñas no coinsiden");
+            }
+            if (password == passwordChang) {
+                return alert("La contraseña nueva debe de ser diferente a la actual")
+            }
+
+            var cuerpo = {
+                Nombre_Usuario: user,
+                ContraseniaAnterior: password,
+                ContraseniaActual: passwordConf
+            }
+            console.log(cuerpo);
+            const response = await fetch('http://localhost:5056/api/Values/GeneraCambioContrasenna', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cuerpo)
+            });
+
+            const data = await response.json();
+            console.log(data.success + ', ' + data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:' + error);
+
         }
-        function Cancelar() {
-            var password = document.getElementById("password");
-            var passwordChang = document.getElementById("passwordChang");
-            var passwordConf = document.getElementById("passwordConf");
+    }
+    function Cancelar() {
+        var password = document.getElementById("password");
+        var passwordChang = document.getElementById("passwordChang");
+        var passwordConf = document.getElementById("passwordConf");
 
-            password.value = "";
-            passwordChang.value = "";
-            passwordConf.value = "";
+        password.value = "";
+        passwordChang.value = "";
+        passwordConf.value = "";
 
-            password.focus();
-        }
-
-
-
+        password.focus();
+    }
 
 
-    </script>
-</body>
-</html>
+
+
+
+</script>
+
