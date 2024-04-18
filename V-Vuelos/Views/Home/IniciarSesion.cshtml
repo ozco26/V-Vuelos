@@ -15,24 +15,40 @@
 
 <html>
 <head>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <meta name="viewport" content="width=device-width" />
     <title>IniciarSesion</title>
+
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-6">
+                @if (ViewData.ModelState.Any())
+                {
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
                 <h1>Iniciar Sesión</h1>
-                <form action="iniciar_sesion.php" method="post">
-                    <label for="correo">Correo Electrónico:</label>
-                    <input type="text" id="correo" name="correo" required>
+                <form action="@Url.Action("LoginCliente", "Home")" method="post">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required>
 
                     <label for="contrasena">Contraseña:</label>
-                    <input type="password" id="contrasena" name="contrasena" required><br><br>
-                    <div class="g-recaptcha" data-sitekey="TU_CLAVE_DE_SITIO"></div><br>
+                    <input style="width: 100%; padding: 10px" margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;"
+                           type="password" id="contrasena" name="contrasena" required><br><br>
+                    <div class="g-recaptcha" data-sitekey="6LdBZr4pAAAAANbM1WLR2EjYtdsjewY_NjAjkF63" data-callback="onCaptchaResolved"></div>
+        <input type="hidden" id="captchaResponse" name="captchaResponse" value="" />
                     <button type="submit">Iniciar Sesión</button> <br>
-                    <a href="#">Olvidó su contraseña? Presione aqui para recuperar</a>
                 </form>
+
+
             </div>
             <div class="col-md-6">
                 <div class="text-center">
@@ -43,6 +59,10 @@
             </div>
         </div>
     </div>
-
+    <script>
+        function onCaptchaResolved(token) {
+            document.getElementById("captchaResponse").value = token;
+        }
+    </script>
 </body>
 </html>
