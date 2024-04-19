@@ -206,5 +206,40 @@ namespace V_Vuelos.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+
+        public ActionResult IniciarSesionGoogle()
+        {
+            // Redirigir al usuario a la URL de autorización de Google
+            var redirectUri = Url.Action("Callback", "Home", null, Request.Url.Scheme);
+            var clientId = "743208489889-85e9oneca0brd1c7lciibnm35n6kaiua.apps.googleusercontent.com";
+            var scope = "openid email profile"; // Los alcances que necesites
+            var url = $"https://accounts.google.com/o/oauth2/auth?client_id={clientId}&redirect_uri={redirectUri}&response_type=code&scope={scope}";
+            return Redirect(url);
+        }
+
+        //public async void Callback(string code)
+        //{
+        //    // Intercambiar el código de autorización por un token de acceso de Google
+        //    // Aquí debes hacer una solicitud HTTP a Google para obtener el token de acceso utilizando el código de autorización
+        //    // Una vez que obtengas el token de acceso, puedes autenticar al usuario en tu aplicación y redirigirlo a la página deseada
+        //    var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token");
+        //    var parameters = new Dictionary<string, string>
+        //        {
+        //            { "code", code },
+        //            { "client_id", "743208489889-85e9oneca0brd1c7lciibnm35n6kaiua.apps.googleusercontent.com" },
+        //            { "client_secret", "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" },
+        //            { "redirect_uri", Url.Action("Callback", "Home", null, Request.Url.Scheme) },
+        //            { "grant_type", "authorization_code" }
+        //        };
+        //    tokenRequest.Content = new FormUrlEncodedContent(parameters);
+
+        //    var client = new HttpClient();
+        //    var tokenResponse = await client.SendAsync(tokenRequest);
+        //    var tokenJson = await tokenResponse.Content.ReadAsStringAsync();
+        //    var tokenData = JsonConvert.DeserializeObject<dynamic>(tokenJson);
+        //    var accessToken = tokenData.access_token;
+
+        //    return View("Index");
+        //}
     }
 }
