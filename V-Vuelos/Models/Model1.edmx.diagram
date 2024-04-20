@@ -4,20 +4,27 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="44f913d3535f49019fa8fc8a7d6495d2" Name="Diagram1">
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolinea" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolineas_Pais" Width="1.5" PointX="8" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Consecutivo" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Errore" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Pai" Width="1.5" PointX="5.75" PointY="4" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Permiso" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Puerta" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Rol" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Usuario" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Vitacora" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+      <Diagram DiagramId="dc06dcf45ef94a619ac3a73db728789c" Name="Diagram1">
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolinea" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Aerolineas_Pais" Width="1.5" PointX="1.625" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Compra" Width="1.5" PointX="5.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Consecutivo" Width="1.5" PointX="7.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Errore" Width="1.5" PointX="8.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Pai" Width="1.5" PointX="0.5" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Permiso" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Puerta" Width="1.5" PointX="4.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Rol" Width="1.5" PointX="0.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Tarjeta" Width="1.5" PointX="9.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Usuario" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Vitacora" Width="1.5" PointX="9.75" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="V_vuelos_ProyectoModel.Vuelo" Width="1.5" PointX="6.75" PointY="1.375" IsExpanded="true" />
         <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Aerolineas_Pais_Aerolinea" ManuallyRouted="false" />
+        <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Vuelos_Vuelos" ManuallyRouted="false" />
         <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Aerolineas_Pais_Pais" ManuallyRouted="false" />
+        <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Vuelos_Pais" ManuallyRouted="false" />
+        <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Vuelos_Pais1" ManuallyRouted="false" />
         <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Permisos_Rol" ManuallyRouted="false" />
+        <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Vuelos_Puertas" ManuallyRouted="false" />
         <AssociationConnector Association="V_vuelos_ProyectoModel.FK_Usuario_Rol" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
