@@ -14,8 +14,17 @@ namespace V_Vuelos.Models
     
     public partial class Puerta
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Puerta()
+        {
+            this.Vuelos = new HashSet<Vuelo>();
+        }
+    
         public string Codigo { get; set; }
         public int numero { get; set; }
         public string Detalle { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vuelo> Vuelos { get; set; }
     }
 }

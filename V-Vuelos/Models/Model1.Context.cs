@@ -27,13 +27,16 @@ namespace V_Vuelos.Models
     
         public virtual DbSet<Aerolinea> Aerolineas { get; set; }
         public virtual DbSet<Aerolineas_Pais> Aerolineas_Pais { get; set; }
+        public virtual DbSet<Compra> Compras { get; set; }
         public virtual DbSet<Consecutivos> Consecutivos { get; set; }
         public virtual DbSet<Errore> Errores { get; set; }
         public virtual DbSet<Pai> Pais { get; set; }
         public virtual DbSet<Permiso> Permisos { get; set; }
         public virtual DbSet<Puerta> Puertas { get; set; }
         public virtual DbSet<Rol> Rols { get; set; }
+        public virtual DbSet<Tarjeta> Tarjetas { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Vitacora> Vitacoras { get; set; }
+        public virtual DbSet<Vuelo> Vuelos { get; set; }
     }
 }

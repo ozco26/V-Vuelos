@@ -18,6 +18,8 @@ namespace V_Vuelos.Models
         public Pai()
         {
             this.Aerolineas_Pais = new HashSet<Aerolineas_Pais>();
+            this.Vuelos = new HashSet<Vuelo>();
+            this.Vuelos1 = new HashSet<Vuelo>();
         }
     
         public string CodigoPais { get; set; }
@@ -26,5 +28,9 @@ namespace V_Vuelos.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Aerolineas_Pais> Aerolineas_Pais { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vuelo> Vuelos { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vuelo> Vuelos1 { get; set; }
     }
 }

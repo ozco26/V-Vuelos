@@ -25,7 +25,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="text-center">
-
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Madrid</h5>
@@ -33,56 +32,32 @@
                                 <p class="card-text">Fecha: 2024-02-11</p>
                                 <p class="card-text">Hora: 09:30</p>
                                 <p class="card-text">Precio: 500 US</p>
-                                <button onclick="disminuir()">-</button>
-                                <input type="number" id="numero" value="0" min="0">
-                                <button onclick="incrementar()">+</button><br>
-
+                                <button onclick="disminuir('numero1')">-</button>
+                                <input type="number" id="numero1" value="0" min="0">
+                                <button onclick="incrementar('numero1')">+</button><br>
                                 <button class="btn btn-danger">Comprar</button>
-
-
                             </div>
                         </div>
                         <br>
-                        <!-- Repite este bloque para cada vuelo -->
-
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Londres</h5>
-                                <p class="card-text">Aerolínea: British Airways</p>
-                                <p class="card-text">Fecha: 2024-02-11</p>
-                                <p class="card-text">Hora: 11:45</p>
-                                <p class="card-text">Precio 800 US</p>
-                                <button onclick="disminuir()">-</button>
-                                <input type="number" id="numero" value="0" min="0">
-                                <button onclick="incrementar()">+</button><br>
-                                <button class="btn btn-danger">Comprar</button>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-                <div class="col-md-4" style="text-align: center;  ">
-                    <br>
-                    <h1>Iniciar Sesión con su cuenta</h1>
-                    <form action="iniciar_sesion.php" method="post">
-                        <label for="correo">Correo Electrónico:</label>
-                        <input type="text" id="correo" name="correo" required><br><br>
-
-                        <label for="contrasena">Contraseña:</label>
-                        <input type="password" id="contrasena" name="contrasena" required><br><br>
-
-                        <button type="submit">Iniciar Sesión</button> <br><br>
-                        <a href="#">Olvidó su contraseña? Presione aqui para recuperar</a><br><br>
-
-                        <h2>Iniciar Sesión con</h2><br>
-                        <button class="btn btn-danger boton-social boton-google" onclick="iniciarSesionGoogle()">Google</button><br><br>
-                        <button class="btn btn-primary boton-social boton-facebook" onclick="iniciarSesionFacebook()">Facebook</button>
-                    </form>
-                </div>
-
             </div>
         </div>
 
     </div>
+
+    <script>
+        function incrementar(id) {
+            var input = document.getElementById(id);
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function disminuir(id) {
+            var input = document.getElementById(id);
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+    </script>
 </body>
 </html>
