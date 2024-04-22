@@ -30,7 +30,7 @@ namespace V_Vuelos.Controllers
 
 
         //Visualiza la pantalla Bienvenidos
-        [AuthorizeUser(idOperation: 1)]
+       
         public ActionResult Default()
         {
             return View();

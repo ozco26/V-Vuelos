@@ -12,6 +12,19 @@ namespace V_Vuelos.Models
     using System;
     using System.Collections.Generic;
     
+    public partial class Vuelo1
+    {
+        public string vuelo { get; set; }
+        public string Aerolinea { get; set; }
+        public string Salida { get; set; }
+        public string Llegada { get; set; }
+        public Nullable<System.TimeSpan> Hora { get; set; }
+    
+        public virtual Aerolinea Aerolinea1 { get; set; }
+        public virtual Pai Pai { get; set; }
+        public virtual Pai Pai1 { get; set; }
+    }
+
     public partial class Vuelo
     {
         public string Vuelo1 { get; set; }
@@ -19,7 +32,7 @@ namespace V_Vuelos.Models
         public string Salida { get; set; }
         public string Llegada { get; set; }
         public Nullable<System.TimeSpan> Hora { get; set; }
-    
+
         public virtual Aerolinea Aerolinea1 { get; set; }
         public virtual Pai Pai { get; set; }
         public virtual Pai Pai1 { get; set; }

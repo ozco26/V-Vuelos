@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<V_Vuelos.Models.Vuelo1>
+@{
     ViewBag.Title = "Lista de Vuelos de Llegada";
     if (Session["User"] == null)
     {
@@ -33,51 +34,51 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>LR 456</td>
-                <td>Iberia</td>
-                <td>Madrid</td>
-                <td>2024-02-11</td>
-                <td>09:30</td>
-                <td>Arribó</td>
-                <td>5</td>
-            </tr>
-            <tr>
-                <td>BA 789</td>
-                <td>British Airways</td>
-                <td>Londres</td>
-                <td>2024-02-11</td>
-                <td>11:45</td>
-                <td>A Tiempo</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>LH 123</td>
-                <td>Lufthansa</td>
-                <td>Berlín</td>
-                <td>2024-02-11</td>
-                <td>14:00</td>
-                <td>Demorado</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>AF 567</td>
-                <td>Air France</td>
-                <td>París</td>
-                <td>2024-02-11</td>
-                <td>16:20</td>
-                <td>Confirmado</td>
-                <td>7</td>
-            </tr>
-            <tr>
-                <td>AA 321</td>
-                <td>American Airlines</td>
-                <td>Nueva York</td>
-                <td>2024-02-11</td>
-                <td>18:40</td>
-                <td>A Tiempo</td>
-                <td>10</td>
-            </tr>
+
+            @{
+                Random random = new Random(); 
+                
+            }
+
+            @foreach (var vuelo in Model)
+            {
+                var ram = random.Next(0, 3);
+                var ram2 = random.Next(1, 11);
+
+                if (vuelo.Pai.NombrePais != "Costa Rica")
+                {
+                                       <tr>
+                                           <td>@vuelo.vuelo</td>
+                                           <td>@vuelo.Aerolinea1.NombreAgencia</td>
+                                           <td>@vuelo.Pai.NombrePais</td>
+                                           <td>@DateTime.Now.Date</td>
+                                           <td>@vuelo.Hora</td>
+                                           <td>
+                                               @if (DateTime.Now.TimeOfDay.Subtract(TimeSpan.FromMinutes(60)) > vuelo.Hora)
+                                               {
+                                                   <span>Arribo</span>
+                                               }
+                                               else if (vuelo.Hora + TimeSpan.FromMinutes(10) > DateTime.Now.TimeOfDay)
+                                               {
+                                                   <span>A tiempo</span>
+                                               }
+                                               else if (ram < 1)
+                                               {
+                                                   <span>Retrazado</span>
+                                               }
+                                               else
+                                               {
+                                                   <span>Confirmado</span>
+                                               }
+                                           </td>
+                                           <td>
+                                               <span>@ram2</span>
+                                           </td>
+                                       </tr>
+                    
+                }
+            }
+
         </tbody>
     </table>
 </body>

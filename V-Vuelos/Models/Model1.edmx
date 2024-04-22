@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="V_vuelos_ProyectoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="V_vuelos_ProyectoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Aerolinea">
           <Key>
             <PropertyRef Name="CodigoAerolinea" />
@@ -259,7 +259,8 @@
             <End Role="Vuelos" EntitySet="Vuelos" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="V_vuelos_ProyectoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -271,7 +272,7 @@
           <Property Name="NombreAgencia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Imagen" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Aerolineas_Pais" Relationship="Self.FK_Aerolineas_Pais_Aerolinea" FromRole="Aerolinea" ToRole="Aerolineas_Pais" />
-          <NavigationProperty Name="Vuelos" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Vuelos" FromRole="Aerolinea" ToRole="Vuelo" />
+          <NavigationProperty Name="Vuelos" Relationship="Self.FK_Vuelos_Vuelos" FromRole="Aerolinea" ToRole="Vuelos" />
         </EntityType>
         <EntityType Name="Aerolineas_Pais">
           <Key>
@@ -324,9 +325,9 @@
           <Property Name="NombrePais" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Imagen" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Aerolineas_Pais" Relationship="Self.FK_Aerolineas_Pais_Pais" FromRole="Pais" ToRole="Aerolineas_Pais" />
-          <NavigationProperty Name="Vuelos" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Pais" FromRole="Pai" ToRole="Vuelo" />
-          <NavigationProperty Name="Vuelos1" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Pais1" FromRole="Pai" ToRole="Vuelo" />
-          </EntityType>
+          <NavigationProperty Name="Vuelos" Relationship="Self.FK_Vuelos_Pais" FromRole="Pais" ToRole="Vuelos" />
+          <NavigationProperty Name="Vuelos1" Relationship="Self.FK_Vuelos_Pais1" FromRole="Pais" ToRole="Vuelos" />
+        </EntityType>
         <EntityType Name="Permiso">
           <Key>
             <PropertyRef Name="Id" />
@@ -391,6 +392,19 @@
           <Property Name="Descripcion" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Detalle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
+        <EntityType Name="Vuelo">
+          <Key>
+            <PropertyRef Name="Vuelo1" />
+          </Key>
+          <Property Name="Vuelo1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Aerolinea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Salida" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Llegada" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Hora" Type="Time" Precision="7" />
+          <NavigationProperty Name="Aerolinea1" Relationship="Self.FK_Vuelos_Vuelos" FromRole="Vuelos" ToRole="Aerolinea" />
+          <NavigationProperty Name="Pai" Relationship="Self.FK_Vuelos_Pais" FromRole="Vuelos" ToRole="Pais" />
+          <NavigationProperty Name="Pai1" Relationship="Self.FK_Vuelos_Pais1" FromRole="Vuelos" ToRole="Pais" />
+        </EntityType>
         <Association Name="FK_Aerolineas_Pais_Aerolinea">
           <End Role="Aerolinea" Type="Self.Aerolinea" Multiplicity="1" />
           <End Role="Aerolineas_Pais" Type="Self.Aerolineas_Pais" Multiplicity="*" />
@@ -403,6 +417,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vuelos_Vuelos">
+          <End Role="Aerolinea" Type="Self.Aerolinea" Multiplicity="0..1" />
+          <End Role="Vuelos" Type="Self.Vuelo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aerolinea">
+              <PropertyRef Name="CodigoAerolinea" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="Aerolinea" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Aerolineas_Pais_Pais">
           <End Role="Pais" Type="Self.Pai" Multiplicity="1" />
           <End Role="Aerolineas_Pais" Type="Self.Aerolineas_Pais" Multiplicity="*" />
@@ -412,6 +438,30 @@
             </Principal>
             <Dependent Role="Aerolineas_Pais">
               <PropertyRef Name="CodigoPais" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_Pais">
+          <End Role="Pais" Type="Self.Pai" Multiplicity="0..1" />
+          <End Role="Vuelos" Type="Self.Vuelo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pais">
+              <PropertyRef Name="CodigoPais" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="Llegada" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_Pais1">
+          <End Role="Pais" Type="Self.Pai" Multiplicity="0..1" />
+          <End Role="Vuelos" Type="Self.Vuelo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pais">
+              <PropertyRef Name="CodigoPais" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="Salida" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -452,13 +502,26 @@
           <EntitySet Name="Tarjetas" EntityType="Self.Tarjeta" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuario" />
           <EntitySet Name="Vitacoras" EntityType="Self.Vitacora" />
+          <EntitySet Name="Vuelos" EntityType="Self.Vuelo" />
           <AssociationSet Name="FK_Aerolineas_Pais_Aerolinea" Association="Self.FK_Aerolineas_Pais_Aerolinea">
             <End Role="Aerolinea" EntitySet="Aerolineas" />
             <End Role="Aerolineas_Pais" EntitySet="Aerolineas_Pais" />
           </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_Vuelos" Association="Self.FK_Vuelos_Vuelos">
+            <End Role="Aerolinea" EntitySet="Aerolineas" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
           <AssociationSet Name="FK_Aerolineas_Pais_Pais" Association="Self.FK_Aerolineas_Pais_Pais">
             <End Role="Pais" EntitySet="Pais" />
             <End Role="Aerolineas_Pais" EntitySet="Aerolineas_Pais" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_Pais" Association="Self.FK_Vuelos_Pais">
+            <End Role="Pais" EntitySet="Pais" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_Pais1" Association="Self.FK_Vuelos_Pais1">
+            <End Role="Pais" EntitySet="Pais" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
           </AssociationSet>
           <AssociationSet Name="FK_Permisos_Rol" Association="Self.FK_Permisos_Rol">
             <End Role="Rol" EntitySet="Rols" />
@@ -468,70 +531,8 @@
             <End Role="Rol" EntitySet="Rols" />
             <End Role="Usuario" EntitySet="Usuarios" />
           </AssociationSet>
-          <EntitySet Name="Vuelos" EntityType="V_vuelos_ProyectoModel.Vuelo" />
-          <AssociationSet Name="FK_Vuelos_Vuelos" Association="V_vuelos_ProyectoModel.FK_Vuelos_Vuelos">
-            <End Role="Aerolinea" EntitySet="Aerolineas" />
-            <End Role="Vuelo" EntitySet="Vuelos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Vuelos_Pais" Association="V_vuelos_ProyectoModel.FK_Vuelos_Pais">
-            <End Role="Pai" EntitySet="Pais" />
-            <End Role="Vuelo" EntitySet="Vuelos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Vuelos_Pais1" Association="V_vuelos_ProyectoModel.FK_Vuelos_Pais1">
-            <End Role="Pai" EntitySet="Pais" />
-            <End Role="Vuelo" EntitySet="Vuelos" />
-          </AssociationSet>
-          </EntityContainer>
-        <EntityType Name="Vuelo">
-          <Key>
-            <PropertyRef Name="Vuelo1" />
-          </Key>
-          <Property Name="Vuelo1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Aerolinea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Salida" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Llegada" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Hora" Type="Time" Precision="7" />
-          <NavigationProperty Name="Aerolinea1" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Vuelos" FromRole="Vuelo" ToRole="Aerolinea" />
-          <NavigationProperty Name="Pai" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Pais" FromRole="Vuelo" ToRole="Pai" />
-          <NavigationProperty Name="Pai1" Relationship="V_vuelos_ProyectoModel.FK_Vuelos_Pais1" FromRole="Vuelo" ToRole="Pai" />
-        </EntityType>
-        <Association Name="FK_Vuelos_Vuelos">
-          <End Type="V_vuelos_ProyectoModel.Aerolinea" Role="Aerolinea" Multiplicity="0..1" />
-          <End Type="V_vuelos_ProyectoModel.Vuelo" Role="Vuelo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Aerolinea">
-              <PropertyRef Name="CodigoAerolinea" />
-            </Principal>
-            <Dependent Role="Vuelo">
-              <PropertyRef Name="Aerolinea" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Vuelos_Pais">
-          <End Type="V_vuelos_ProyectoModel.Pai" Role="Pai" Multiplicity="0..1" />
-          <End Type="V_vuelos_ProyectoModel.Vuelo" Role="Vuelo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Pai">
-              <PropertyRef Name="CodigoPais" />
-            </Principal>
-            <Dependent Role="Vuelo">
-              <PropertyRef Name="Llegada" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Vuelos_Pais1">
-          <End Type="V_vuelos_ProyectoModel.Pai" Role="Pai" Multiplicity="0..1" />
-          <End Type="V_vuelos_ProyectoModel.Vuelo" Role="Vuelo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Pai">
-              <PropertyRef Name="CodigoPais" />
-            </Principal>
-            <Dependent Role="Vuelo">
-              <PropertyRef Name="Salida" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        </Schema>
+        </EntityContainer>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -669,11 +670,11 @@
           <EntitySetMapping Name="Vuelos">
             <EntityTypeMapping TypeName="V_vuelos_ProyectoModel.Vuelo">
               <MappingFragment StoreEntitySet="Vuelos">
-                <ScalarProperty Name="Hora" ColumnName="Hora" />
-                <ScalarProperty Name="Llegada" ColumnName="Llegada" />
-                <ScalarProperty Name="Salida" ColumnName="Salida" />
-                <ScalarProperty Name="Aerolinea" ColumnName="Aerolinea" />
                 <ScalarProperty Name="Vuelo1" ColumnName="Vuelo" />
+                <ScalarProperty Name="Aerolinea" ColumnName="Aerolinea" />
+                <ScalarProperty Name="Salida" ColumnName="Salida" />
+                <ScalarProperty Name="Llegada" ColumnName="Llegada" />
+                <ScalarProperty Name="Hora" ColumnName="Hora" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
