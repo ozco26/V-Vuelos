@@ -125,7 +125,7 @@ namespace V_Vuelos.Controllers
 
                     try
                     {
-                        var model = JsonConvert.DeserializeObject<List<Consecutivos>>(json);
+                        var model = JsonConvert.DeserializeObject<List<Consecutivo>>(json);
 
                         return View(model);
                     }
@@ -162,7 +162,7 @@ namespace V_Vuelos.Controllers
 
                     try
                     {
-                        var consecutivo = JsonConvert.DeserializeObject<Consecutivos>(json);
+                        var consecutivo = JsonConvert.DeserializeObject<Consecutivo>(json);
 
                         if (consecutivo == null)
                         {
