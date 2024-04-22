@@ -174,6 +174,7 @@ namespace V_Vuelos.Controllers
                     catch (JsonReaderException ex)
                     {
                         // Manejar la excepción de deserialización JSON
+
                         Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
                         return View("Error", "Error al procesar los datos recibidos.");
                     }
@@ -782,8 +783,61 @@ namespace V_Vuelos.Controllers
         }
 
 
+        //Metodo de pago
 
-        
+        public async Task<ActionResult> MetodoPago()
+        {
+            try
+            {
+                string ConsultaApi = "http://localhost:5056/api/Values/Obtener-Tarjetas";
+
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync(ConsultaApi);
+
+                    // Verificar si la solicitud fue exitosa
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                        var json = await response.Content.ReadAsStringAsync();
+
+                        try
+                        {
+                            var Tarjetas = JsonConvert.DeserializeObject<List<Tarjeta>>(json);
+                            Console.WriteLine("Tarjetas: " + Tarjetas.Count);
+                            
+                            ViewBag.Puerta = Tarjetas;
+
+                            // Devolver la vista con los datos
+                            return View(ViewBag);
+                        }
+                        catch (JsonReaderException ex)
+                        {
+                            // Manejar la excepción de deserialización JSON
+                            Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
+                            return View("Error", "Error al procesar los datos recibidos.");
+                        }
+                    }
+                    else
+                    {
+                        // Si la solicitud no fue exitosa, devolver una vista de error
+                        return View("Error");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Capturar excepción relacionada con la solicitud HTTP
+                Console.WriteLine("Error al realizar la solicitud HTTP: " + ex.Message);
+                return View("Error", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Capturar cualquier otra excepción no especificada
+                Console.WriteLine("Error inesperado: " + ex.Message);
+                return View("Error");
+            }
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿
 @{
+    
     Layout = Layout = "~/Views/Shared/_Layout.cshtml";
     if (Session["User"] == null)
     {
@@ -8,9 +9,11 @@
     }
     else
     {
+
         Layout = "~/Views/Shared/_Layout_login.cshtml";
     }
 }
+@using V_Vuelos.Models
 
 <!DOCTYPE html>
 
@@ -35,7 +38,8 @@
                                 <button onclick="disminuir('numero1')">-</button>
                                 <input type="number" id="numero1" value="0" min="0">
                                 <button onclick="incrementar('numero1')">+</button><br>
-                                <button class="btn btn-danger">Comprar</button>
+                                <a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a>
+
                             </div>
                         </div>
                         <br>
@@ -58,6 +62,8 @@
                 input.value = parseInt(input.value) - 1;
             }
         }
+
+
     </script>
 </body>
 </html>

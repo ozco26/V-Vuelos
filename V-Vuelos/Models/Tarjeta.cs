@@ -11,16 +11,41 @@ namespace V_Vuelos.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class Tarjeta
     {
+        [Required]
+        [StringLength(2)] // Limita a dos caracteres
         public string TipoTarjeta { get; set; }
-        public Nullable<int> Mes_Expiración { get; set; }
-        public Nullable<int> Anno_Expiración { get; set; }
+
+        [Required]
+        [Range(1, 12)] // Valida el rango del mes de expiración
+        public int Mes_Expiración { get; set; }
+
+        [Required]
+        public int Anno_Expiración { get; set; }
+
+        [Required]
+        [StringLength(16)] // Limita el número de tarjeta a 16 caracteres
         public string Num_Tarjeta { get; set; }
+
+        [Required]
+        [StringLength(50)] // Limita a 50 caracteres para nombre
+
         public string Nombre { get; set; }
+
+        [Required]
+        [StringLength(50)] // Limita a 50 caracteres para apellido
         public string Apellido { get; set; }
-        public Nullable<int> Id_Usuario { get; set; }
+
+        [Required]
+        public int Id_Usuario { get; set; }
+
+        [Key] // Define como clave primaria
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Consecutivo { get; set; }
     }
 }
