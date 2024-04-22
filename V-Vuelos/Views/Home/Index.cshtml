@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<V_Vuelos.Models.Pai>
+@{
     ViewBag.Title = "Home Page";
     if (Session["User"] == null)
     {
@@ -12,16 +13,29 @@
 }
 
 <main>
- 
-        <div class="container">
-            <h1>Búsqueda de Vuelos</h1>
-            <form action="buscar_vuelos.php" method="get">
-                <label for="origen">Origen:</label>
-                <input type="text" id="origen" name="origen" placeholder="Origen">
+
+    <div class="container">
+        <h1>Búsqueda de Vuelos</h1>
+        <form action="buscar_vuelos.php" method="get">
+
+
+            <label for="origen">Origen:</label>
+            <select id="filtroPais">
+                <option value="">Selecciona un país</option>
+                @foreach (var pais in Model.Select(ap => ap).Distinct())
+                {
+                    <option value="@pais.NombrePais">@pais.NombrePais</option>
+                }
+            </select>
 
                 <label for="destino">Destino:</label>
-                <input type="text" id="destino" name="destino" placeholder="Destino">
-
+                <select id="filtroPais">
+                    <option value="">Selecciona un país</option>
+                    @foreach (var pais in Model.Select(ap => ap).Distinct())
+                    {
+                        <option value="@pais.NombrePais">@pais.NombrePais</option>
+                    }
+                </select>
                 <label for="fecha_salida">Fecha de salida:</label>
                 <input type="date" id="fecha_salida" name="fecha_salida">
 
@@ -29,7 +43,7 @@
                 <input type="date" id="fecha_regreso" name="fecha_regreso">
 
                 <input type="submit" value="Buscar Vuelos">
-            </form>
-        </div>
+</form>
+    </div>
 
 </main>

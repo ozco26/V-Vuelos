@@ -18,14 +18,10 @@ namespace V_Vuelos.Models
         public string Aerolinea { get; set; }
         public string Salida { get; set; }
         public string Llegada { get; set; }
-        public Nullable<System.DateTime> Fecha_Hora { get; set; }
-        public Nullable<int> Estado { get; set; }
-        public string Puerta { get; set; }
-        public string ConsVuelo { get; set; }
+        public Nullable<System.TimeSpan> Hora { get; set; }
     
         public virtual Aerolinea Aerolinea1 { get; set; }
         public virtual Pai Pai { get; set; }
         public virtual Pai Pai1 { get; set; }
-        public virtual Puerta Puerta1 { get; set; }
     }
 }

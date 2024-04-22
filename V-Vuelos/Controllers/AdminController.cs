@@ -25,7 +25,7 @@ namespace V_Vuelos.Controllers
 
         public AdminController() => _context = new V_vuelos_ProyectoEntities(); //  contexto de base de datos
 
-        
+
 
 
 
@@ -671,12 +671,48 @@ namespace V_Vuelos.Controllers
 
 
 
-
-
-        public ActionResult AerolineasPorPais()
+        public async Task<ActionResult> AerolineasPorPais()
         {
-            return View();
+            try
+            {
+                // Llamar al método para obtener los datos de aerolíneas por país desde la API
+                var aerolineasPorPais = await GetAerolineasPorPais();
+
+                // Pasar los datos a la vista
+                return View(aerolineasPorPais);
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                return View("Error", $"Error al obtener los datos de aerolíneas por país: {ex.Message}");
+            }
         }
+
+
+        private async Task<List<Aerolineas_Pais>> GetAerolineasPorPais()
+        {
+
+            string consultaApi = "http://localhost:5056/api/Values/Obtener-AerolineasPorPais";
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(consultaApi);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<Aerolineas_Pais>>(json);
+                }
+                else
+                {
+                    // Manejar errores de solicitud HTTP
+                    throw new HttpRequestException($"Error al realizar la solicitud HTTP: {(int)response.StatusCode} - {response.ReasonPhrase}");
+                }
+            }
+
+        }
+    
+    
 
 
 

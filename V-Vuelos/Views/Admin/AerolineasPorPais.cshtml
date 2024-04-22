@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<V_Vuelos.Models.Aerolineas_Pais>
+@{
     Layout = "~/Views/Shared/_Layout_admin.cshtml";
     ViewBag.Title = "Aerolineas Por Pais";
 }
@@ -10,9 +11,10 @@
 <label for="filtroPais">Filtrar por país:</label>
 <select id="filtroPais">
     <option value="">Selecciona un país</option>
-    <option value="Italia">Italia</option>
-    <option value="España">España</option>
-    <option value="Francia">Francia</option>
+    @foreach (var pais in Model.Select(ap => ap.Pai).Distinct())
+    {
+        <option value="@pais.NombrePais">@pais.NombrePais</option>
+    }
 </select>
 
 <table id="tablaAgencias" border="1" class="table table-striped">
@@ -24,16 +26,22 @@
             <th>Imagen</th>
         </tr>
 
-        <tr>
-            <td>001</td>
-            <td>Iberia</td>
-            <td>España</td>
-            <td>No found </td>
-        </tr>
+    <tbody id="cuerpoTabla">
+        @foreach (var aerolinea in Model)
+        {
+            <tr>
+                <td>@aerolinea.CodigoAgencia</td>
+                <td>@aerolinea.Aerolinea.NombreAgencia</td>
+                <td>@aerolinea.Pai.NombrePais</td>
+                <td><img src="data:image;base64,@aerolinea.Aerolinea.Imagen" width="100" /> </td> <!-- Aquí deberías mostrar la imagen si tienes la URL -->
+            </tr>
+        }
     </tbody>
+    
 </table>
 
-<script>document.getElementById("filtroPais").addEventListener("change", function() {
+<script>
+    document.getElementById("filtroPais").addEventListener("change", function () {
         var selectedPais = this.value.toUpperCase();
         var table = document.getElementById("tablaAgencias");
         var tr = table.getElementsByTagName("tr");

@@ -33,6 +33,7 @@ namespace V_Vuelos.Models
 
         [Required]
         [StringLength(50)] // Limita a 50 caracteres para nombre
+
         public string Nombre { get; set; }
 
         [Required]
@@ -44,6 +45,7 @@ namespace V_Vuelos.Models
 
         [Key] // Define como clave primaria
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int Consecutivo { get; set; }
     }
 }
