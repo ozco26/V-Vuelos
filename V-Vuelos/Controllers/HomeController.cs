@@ -24,10 +24,48 @@ namespace V_Vuelos.Controllers
             public bool success { get; set; }
             public string message { get; set; }
         }
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View();
+
+            try
+            {
+                // Llamar al método para obtener los datos de aerolíneas por país desde la API
+                var aerolineasPorPais = await GetPais();
+
+                // Pasar los datos a la vista
+                return View(aerolineasPorPais);
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                return View("Error", $"Error al obtener los datos de aerolíneas por país: {ex.Message}");
+            }
+           
         }
+
+        private async Task<List<Pai>> GetPais()
+        {
+
+            string consultaApi = "http://localhost:5056/api/Values/Obtener-Paises";
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(consultaApi);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<Pai>>(json);
+                }
+                else
+                {
+                    // Manejar errores de solicitud HTTP
+                    throw new HttpRequestException($"Error al realizar la solicitud HTTP: {(int)response.StatusCode} - {response.ReasonPhrase}");
+                }
+            }
+
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> LoginCliente(string username, string contrasena, string captchaResponse)

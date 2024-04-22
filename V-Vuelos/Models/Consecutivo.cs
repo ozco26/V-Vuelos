@@ -12,13 +12,13 @@ namespace V_Vuelos.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Consecutivos
+    public partial class Consecutivo
     {
         public int Codigo { get; set; }
         public string Descripcion { get; set; }
         public string Prefijo { get; set; }
         public bool PoseePrefijo { get; set; }
-        public Nullable<int> Consecutivo { get; set; }
+        public Nullable<int> Consecutivo1 { get; set; }
         public bool PoseeRango { get; set; }
         public Nullable<int> RangoInicial { get; set; }
         public Nullable<int> RangoFinal { get; set; }

@@ -17,9 +17,10 @@ namespace V_Vuelos.Models
         public string TipoTarjeta { get; set; }
         public Nullable<int> Mes_Expiración { get; set; }
         public Nullable<int> Anno_Expiración { get; set; }
+        public string Num_Tarjeta { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public string Usuario { get; set; }
+        public Nullable<int> Id_Usuario { get; set; }
         public int Consecutivo { get; set; }
     }
 }
