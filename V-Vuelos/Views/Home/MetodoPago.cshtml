@@ -7,6 +7,35 @@
     {
         Layout = "~/Views/Shared/_Layout_login.cshtml";
     }
+
+
+    string tarjetaMascara(string numeroTarjeta)
+    {
+        // Obtener los últimos cuatro dígitos de la tarjeta
+        var ultimosCuatro = numeroTarjeta.Substring(numeroTarjeta.Length - 4);
+
+        // Reemplazar el resto con Xs
+        var numX = new string('X', numeroTarjeta.Length - 4);
+
+        // Retornar el formato con Xs y últimos cuatro dígitos visibles
+        return numX + ultimosCuatro;
+    }
+
+    string TipoTarjeta(string TipoTarjeta)
+    {
+
+        if(TipoTarjeta == "MC")
+        {
+            return "Master Card";
+        }
+        else
+        {
+            return "Visa";
+        }
+
+    }
+
+
 }
 
 <!DOCTYPE html>
@@ -29,89 +58,33 @@
 
         <div id="tarjetaCredito" style="display: none;">
             <fieldset>
-                <legend><strong>Tarjeta de credito Registradas</strong></legend>
+                <legend><strong>Tarjetas de crédito registradas</strong></legend>
                 <div class="container">
-                    <div class="card">
-                        <div class="card-header">
-                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                            XXXXXXXXXXXX1111
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Visa</h5>
-                        </div>
-                        <div class="card-footer">
-                            Expira: 12/2023
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card mt-2">
-                        <div class="card-header">
-                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                            XXXXXXXXXXXX2222
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">MasterCard</h5>
-                        </div>
-                        <div class="card-footer">
-                            Expira: 09/2024
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card mt-2">
-                        <div class="card-header">
-                            <input class="form-check-input" type="checkbox" id="tarjeta1" name="tarjeta1"> -
-                            XXXXXXXXXXXX3333
-                        </div>
-                        <div class="card-body">
-                            <h5>Visa</h5>
-                        </div>
-                        <div class="card-footer">
-                            Expira: 06/2025
-                        </div>
-                    </div>
+                    @if (ViewBag.Tarjetas != null)
+                    {
+                        foreach (var tarjeta in ViewBag.Tarjetas)
+                        {
+                            <div class="card mt-2">
+                                <div class="card-header">
+                                    <input class="form-check-input" type="radio" name="tarjetaSeleccionada" value="@tarjeta.Num_Tarjeta"> @tarjetaMascara(tarjeta.Num_Tarjeta)
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@TipoTarjeta(tarjeta.TipoTarjeta)</h5>
+                                </div>
+                                <div class="card-footer">
+                                    Expira: @tarjeta.Mes_Expiración/@tarjeta.Anno_Expiración
+                                </div>
+                            </div>
+                            <br>
+                        }
+                    }
+                    else
+                    {
+                        <p>No hay tarjetas de crédito registradas.</p>
+                    }
                 </div>
                 <button class="btn btn-danger">Usar tarjeta seleccionada para ir a pagar</button>
             </fieldset>
-
-            <div class="container">
-                <fieldset>
-
-                    <legend>Comprar sin registrar</legend>
-                    <div class="container">
-                        <form>
-                            <div class="form-group">
-                                <label for="numero">Número de Tarjeta:</label>
-                                <input type="text" class="form-control" id="numero" name="numero"
-                                       placeholder="Ingrese el número de tarjeta" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tipo">Tipo de Tarjeta:</label>
-                                <select class="form-control" id="tipo" name="tipo" required>
-                                    <option value="">Seleccione el tipo de tarjeta</option>
-                                    <option value="visa">Visa</option>
-                                    <option value="mastercard">MasterCard</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="fecha">Fecha de Expiración:</label>
-                                <input type="text" class="form-control" id="fecha" name="fecha"
-                                       placeholder="MM/AAAA" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="ccv">Número de seguridad:</label>
-                                <input type="text" class="form-control" id="numero" name="numero"
-                                       placeholder="Ingrese el número de tarjeta" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-danger">Ir a pagar</button>
-
-                        </form>
-                    </div>
-
-                </fieldset>
-            </div>
         </div>
 
         <div id="easyPay" style="display: none;">
@@ -168,6 +141,9 @@
                 document.getElementById("reserva").style.display = "block";
             }
         });
+
+
+
     </script>
 </body>
 </html>
