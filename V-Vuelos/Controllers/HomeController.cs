@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI;
+using Microsoft.Ajax.Utilities;
 
 namespace V_Vuelos.Controllers
 {
@@ -170,9 +172,23 @@ namespace V_Vuelos.Controllers
             return View();
         }
 
-        public ActionResult ComprarVuelosInicio()
+        public async Task<ActionResult> ComprarVuelosInicio(string vuelo, DateTime fecha)
         {
-            return View();
+            try
+            {
+                // Llamar al método para obtener los datos de aerolíneas por país desde la API
+                var vuelos = await GetVuelos(); // Aquí podrías usar los parámetros pais y fecha en tu método GetVuelos
+                vuelos = vuelos.Where(v => v.vuelo == vuelo).ToList();
+                // Pasar los datos a la vista
+
+                ViewBag.Fecha = fecha; // Pasar la fecha a la vista utilizando ViewBag
+                return View(vuelos);
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                return View("Error", $"Error al obtener los datos de aerolíneas por país: {ex.Message}");
+            }
         }
         public ActionResult IniciarSesion()
         {
@@ -356,7 +372,25 @@ namespace V_Vuelos.Controllers
             return Redirect(url);
         }
 
+        public async Task<ActionResult> BuscaVuelosCompra(string pais, DateTime fecha) {
 
+            try
+            {
+                // Llamar al método para obtener los datos de aerolíneas por país desde la API
+                var vuelos = await GetVuelos();
+                vuelos = vuelos.OrderBy(v => v.Hora).ToList();
+                // Pasar los datos a la vista
+                ViewBag.Pais = pais; // Pasar el país a la vista utilizando ViewBag
+                ViewBag.Fecha = fecha; // Pasar la fecha a la vista utilizando ViewBag
+                return View(vuelos);
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                return View("Error", $"Error al obtener los datos de aerolíneas por país: {ex.Message}");
+            }
+
+        }
 
         //public async void Callback(string code)
         //{

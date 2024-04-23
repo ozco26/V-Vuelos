@@ -1,6 +1,6 @@
-﻿
+﻿@model List<V_Vuelos.Models.Vuelo1>
 @{
-    
+
     Layout = Layout = "~/Views/Shared/_Layout.cshtml";
     if (Session["User"] == null)
     {
@@ -27,23 +27,28 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="text-center">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Madrid</h5>
-                                <p class="card-text">Aerolínea: Iberia</p>
-                                <p class="card-text">Fecha: 2024-02-11</p>
-                                <p class="card-text">Hora: 09:30</p>
-                                <p class="card-text">Precio: 500 US</p>
-                                <button onclick="disminuir('numero1')">-</button>
-                                <input type="number" id="numero1" value="0" min="0">
-                                <button onclick="incrementar('numero1')">+</button><br>
-                                <a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a>
+                    @foreach (var vuelo in Model)
+                    {
+                        <div class="text-center">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Origen: @vuelo.Pai.NombrePais</h5>
+                                    <h5 class="card-title">Destino: @vuelo.Pai1.NombrePais</h5>
+                                    <p class="card-text">Aerolínea: @vuelo.Aerolinea1.NombreAgencia</p>
+                                    <p class="card-text">Fecha: @ViewBag.Fecha.Date.ToString("d")</p>
+                                    <p class="card-text">Hora: @vuelo.Hora</p>
+                                    <p class="card-text">Precio: 500 US</p>
+                                    <button onclick="disminuir('numero1')">-</button>
+                                    <input type="number" id="numero1" value="0" min="0">
+                                    <button onclick="incrementar('numero1')">+</button><br>
+                                    <a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a>
 
+                                </div>
                             </div>
+                            <br>
                         </div>
-                        <br>
-                    </div>
+                    }
+
                 </div>
             </div>
         </div>

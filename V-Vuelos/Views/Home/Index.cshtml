@@ -16,34 +16,54 @@
 
     <div class="container">
         <h1>Búsqueda de Vuelos</h1>
-        <form action="buscar_vuelos.php" method="get">
+        <label for="origen">Origen o Destino :</label>
+        <select id="filtroPais">
+            <option value="">Selecciona un país</option>
+            @foreach (var pais in Model.Select(ap => ap).Distinct())
+            {
+                <option value="@pais.NombrePais">@pais.NombrePais</option>
+            }
+        </select>
 
+        <label for="fecha_salida">Fecha :</label>
+        <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="fecha_salida" name="fecha_salida" >
 
-            <label for="origen">Origen:</label>
-            <select id="filtroPais">
-                <option value="">Selecciona un país</option>
-                @foreach (var pais in Model.Select(ap => ap).Distinct())
-                {
-                    <option value="@pais.NombrePais">@pais.NombrePais</option>
-                }
-            </select>
-
-                <label for="destino">Destino:</label>
-                <select id="filtroPais">
-                    <option value="">Selecciona un país</option>
-                    @foreach (var pais in Model.Select(ap => ap).Distinct())
-                    {
-                        <option value="@pais.NombrePais">@pais.NombrePais</option>
-                    }
-                </select>
-                <label for="fecha_salida">Fecha de salida:</label>
-                <input type="date" id="fecha_salida" name="fecha_salida">
-
-                <label for="fecha_regreso">Fecha de regreso:</label>
-                <input type="date" id="fecha_regreso" name="fecha_regreso">
-
-                <input type="submit" value="Buscar Vuelos">
-</form>
+        @if (Session["User"] == null)
+        {
+            <button type="button" onclick="location.href='@Url.Action("IniciarSesion", "Home")'">Iniciar sesión</button>
+        }
+        else
+        {
+            <button type="button" onclick="buscarVuelo()">Buscar Vuelo</button>
+        }
     </div>
-
 </main>
+
+<script>
+    function buscarVuelo() {
+        var pais = document.getElementById("filtroPais").value;
+        var fecha = document.getElementById("fecha_salida").value;
+        console.log(fecha);
+        if (pais == "" || fecha.length === 0) {
+            return alert("Falta infomración para procesar")
+        }
+
+        location.href = '@Url.Action("BuscaVuelosCompra", "Home")' + '?pais=' + encodeURIComponent(pais) + '&fecha=' + encodeURIComponent(fecha);
+    }
+
+    var fechaSalidaInput = document.getElementById("fecha_salida");
+    var fechaActual = new Date().toISOString().split('T')[0];
+       
+    fechaSalidaInput.min = fechaActual;
+
+    function verificarFecha() {
+        var fechaSeleccionada = fechaSalidaInput.value;
+        if (fechaSeleccionada < fechaActual) {
+            alert("Por favor, seleccione una fecha válida en el futuro.");
+            fechaSalidaInput.value = ''; 
+        }
+    }
+
+    
+    fechaSalidaInput.addEventListener("change", verificarFecha);
+</script>
