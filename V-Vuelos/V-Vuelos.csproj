@@ -298,6 +298,7 @@
     <Content Include="Views\Home\MetodoPago.cshtml" />
     <Content Include="Views\Shared\_Layout_login.cshtml" />
     <Content Include="Views\Home\AgregarTarjeta.cshtml" />
+    <Content Include="Views\Home\BuscaVuelosCompra.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

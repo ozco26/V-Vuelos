@@ -1,0 +1,64 @@
+﻿@model List<V_Vuelos.Models.Vuelo1>
+@{
+    ViewBag.Title = "Lista de Vuelos de Llegada";
+    if (Session["User"] == null)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout_login.cshtml";
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Para Compra</title>
+
+</head>
+<body>
+    <h2>Lista de vuelos para Compra</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Vuelo</th>
+                <th>Aerolínea</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Botón de compra</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var vuelo in Model)
+            {
+                if (vuelo.Pai.NombrePais == ViewBag.Pais || ViewBag.Pais == vuelo.Pai1.NombrePais)
+                {
+                    <tr>
+                        <td>@vuelo.vuelo</td>
+                        <td>@vuelo.Aerolinea1.NombreAgencia</td>
+                        <td>@vuelo.Pai.NombrePais</td>
+                        <td>@vuelo.Pai1.NombrePais</td>
+                        <td>@ViewBag.Fecha.ToString("d")</td>
+
+                        <td>@vuelo.Hora</td>
+                        <td style="text-align: center;">
+                            <form action="@Url.Action("ComprarVuelosInicio", "Home")" method="post">
+                                <input type="hidden" name="vuelo" value="@vuelo.vuelo" />
+                                <input type="hidden" name="fecha" value="@ViewBag.Fecha.Date.ToString("yyyy-MM-dd")" />
+                                <button type="submit" class="btn btn-primary">Comprar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+     </tbody>
+</table>
+
+</body>
+</html>
