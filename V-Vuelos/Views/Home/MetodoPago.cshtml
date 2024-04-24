@@ -6,7 +6,10 @@
     else
     {
         Layout = "~/Views/Shared/_Layout_login.cshtml";
+        Console.WriteLine(ViewBag.DatosViaje);
     }
+
+
 
 
     string tarjetaMascara(string numeroTarjeta)
@@ -24,7 +27,7 @@
     string TipoTarjeta(string TipoTarjeta)
     {
 
-        if(TipoTarjeta == "MC")
+        if (TipoTarjeta == "MC")
         {
             return "Master Card";
         }
@@ -35,6 +38,40 @@
 
     }
 
+}
+
+@using V_Vuelos.Models
+
+@{ 
+    var usuario = ((Session["User"] as Usuario)?.Id_Usuario)+"";
+
+    Random random = new Random();
+    const string letrasMayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const string letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
+    const string numeros = "0123456789";
+
+    string GenerarBookID()
+    {
+        // Seleccionar 3 letras mayúsculas al azar
+        var mayusculas = new string(Enumerable.Repeat(letrasMayusculas, 3)
+                                        .Select(s => s[random.Next(s.Length)])
+                                        .ToArray());
+
+        // Seleccionar 3 letras minúsculas al azar
+        var minusculas = new string(Enumerable.Repeat(letrasMinusculas, 3)
+                                          .Select(s => s[random.Next(s.Length)])
+                                          .ToArray());
+
+        // Seleccionar 3 números al azar
+        var numerosAlAzar = new string(Enumerable.Repeat(numeros, 3)
+                                       .Select(s => s[random.Next(s.Length)])
+                                       .ToArray());
+
+        // Combinar las partes para crear el bookID
+        return mayusculas + minusculas + numerosAlAzar;
+    }
+
+    
 
 }
 
@@ -46,6 +83,25 @@
 </head>
 <body>
     <div class="container">
+        @if (ViewBag.DatosViaje != null)
+        {
+            var datosViaje = ViewBag.DatosViaje;
+
+            <h2>Detalles del Vuelo</h2>
+            <p><strong>Origen:</strong> @datosViaje.Origen</p>
+            <p><strong>Destino:</strong> @datosViaje.Destino</p>
+            <p><strong>Aerolínea:</strong> @datosViaje.Aerolinea</p>
+            <p><strong>Fecha:</strong> @datosViaje.Fecha</p>
+            <p><strong>Hora:</strong> @datosViaje.Hora</p>
+            <p><strong>Precio Total:</strong> @datosViaje.nPrecio</p>
+            <p><strong>Cantidad de Boletos:</strong> @datosViaje.Cantidad</p>
+        }
+        else
+        {
+            <p>No hay datos de viaje disponibles.</p>
+        }
+    </div>
+    <div class="container">
         <h1>Metodo de Pago</h1>
         <div class="form-group">
             <label for="metodoPago">Seleccione un método de pago:</label>
@@ -56,7 +112,11 @@
             </select>
         </div>
 
-        <div id="tarjetaCredito" style="display: none;">
+
+
+
+
+        <div id="tarjetaCredito" style="display: block;">
             <fieldset>
                 <legend><strong>Tarjetas de crédito registradas</strong></legend>
                 <div class="container">
@@ -66,13 +126,18 @@
                         {
                             <div class="card mt-2">
                                 <div class="card-header">
-                                    <input class="form-check-input" type="radio" name="tarjetaSeleccionada" value="@tarjeta.Num_Tarjeta"> @tarjetaMascara(tarjeta.Num_Tarjeta)
+                                    <input class="form-check-input" type="radio" name="tarjetaSeleccionada" value="@tarjeta.Num_Tarjeta">
                                 </div>
                                 <div class="card-body">
+                                    @tarjetaMascara(tarjeta.Num_Tarjeta)
                                     <h5 class="card-title">@TipoTarjeta(tarjeta.TipoTarjeta)</h5>
+                                    Expira: @tarjeta.Mes_Expiración/@tarjeta.Anno_Expiración
                                 </div>
                                 <div class="card-footer">
-                                    Expira: @tarjeta.Mes_Expiración/@tarjeta.Anno_Expiración
+
+
+                                    <button class="btn btn-danger" onclick="eliminarTarjeta(@tarjeta.Consecutivo)">Borrar</button>
+
                                 </div>
                             </div>
                             <br>
@@ -83,9 +148,23 @@
                         <p>No hay tarjetas de crédito registradas.</p>
                     }
                 </div>
-                <button class="btn btn-danger">Usar tarjeta seleccionada para ir a pagar</button>
+                <a href="@Url.Action("AgregarTarjeta", "Home")" class="btn btn-danger">
+                    Agregar Tarjeta
+                </a>
+                <br />
+                <a id="PagarTarjeta" href="@Url.Action("Pagar", "Home", new{usuario = usuario, metodoPago = "Tarjeta",bookID = GenerarBookID(),estado = "Paid"});" class="btn btn-success" style="display:none">
+                    Pagar
+                </a>
+
             </fieldset>
         </div>
+
+
+
+
+
+
+
 
         <div id="easyPay" style="display: none;">
             <form id="formularioPago">
@@ -104,20 +183,55 @@
                     </div>
                 </div><br>
 
-                <button type="button" class="btn btn-danger" onclick="procesarPago()">Ir a Pagar</button>
+                <button id="ProcesarEasyPay" type="button" class="btn btn-danger" onclick="procesarPago()">Buscar</button>
+                <br />
+
+                <a href="@Url.Action("Pagar", "Home", new{usuario = usuario, metodoPago = "EasyPay",bookID = GenerarBookID(),estado = "Paid"});" id="PagarEasy" class="btn btn-success" style="display:none">
+                    Pagar
+                </a>
+                <br />
+
+                <button id="Refrescar" type="button" class="btn btn-danger" onclick="refrescar()" style="display:none">Cambiar de cuetna</button>
+
             </form>
         </div>
+
+
+
+
+
+
+
 
         <div id="reserva" style="display: none;">
             <form id="formularioReservar">
                 <h5>Usted esta realizando una reserva</h5>
                 <p>El usuario que deberá estar 3 horas antes en la caja para recoger y pagar sus boletos de viaje</p>
-                <button class="btn btn-danger">Reservar</button>
+                <a href="@Url.Action("Pagar", "Home", new{usuario = usuario, metodoPago = "Reserva",bookID = GenerarBookID(),estado = "Pending"});" class="btn btn-success">
+                    Reservar
+                </a>
+                
+
             </form>
         </div>
     </div>
 
+
+
+
+
+
+
+
+
     <script>
+
+        function refrescar() {
+            document.getElementById("Refrescar").style.display = "none"; // Mostrar el botón "Refrescar"
+            document.getElementById("PagarEasy").style.display = "none"; // Mostrar el botón "Ir a Pagar"
+            location.reload;
+        }
+
         // Obtener referencia al combo box
         var metodoPago = document.getElementById("metodoPago");
 
@@ -142,6 +256,64 @@
             }
         });
 
+        async function eliminarTarjeta(consecutivo) {
+            const confirmacion = confirm("¿Está seguro de que desea eliminar esta tarjeta?");
+            if (!confirmacion) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5056/api/Values/Eliminar-Tarjeta/${consecutivo}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert("Tarjeta eliminada con éxito.");
+                    // Puedes recargar la página para actualizar la lista de tarjetas
+                    location.reload();
+                } else {
+                    alert("Error al eliminar tarjeta: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error al eliminar tarjeta.");
+            }
+        }
+
+        async function procesarPago() {
+       
+            var numeroCuenta = parseInt(document.getElementById("numeroCuenta").value);
+            var codigoSeguridad = parseInt(document.getElementById("codigoSeguridad").value);
+            var contrasenna = document.getElementById("contrasena").value;
+
+            var url = `https://localhost:7179/api/Values/verificar-cuenta-easypay?num_Cuenta=${numeroCuenta}&codigo_Seguridad=${codigoSeguridad}&contrasenna=${contrasenna}`;
+
+            try {
+                var response = await fetch(url, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert("Cuenta existente");
+                    document.getElementById("Refrescar").style.display = "block"; // Mostrar el botón "Refrescar"
+                    document.getElementById("PagarEasy").style.display = "block"; // Mostrar el botón "Ir a Pagar"
+
+                } else {
+                    var data = await response.json();
+                    alert("Error: " + data.Mensaje);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Ocurrió un error al verificar la cuenta.");
+            }
+        }
+
+        document.querySelectorAll('input[name="tarjetaSeleccionada"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.getElementById("PagarTarjeta").style.display = "block";
+            });
+        });
 
 
     </script>

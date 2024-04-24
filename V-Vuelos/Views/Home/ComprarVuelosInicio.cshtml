@@ -1,18 +1,16 @@
 ﻿@model List<V_Vuelos.Models.Vuelo1>
 @{
-
     Layout = Layout = "~/Views/Shared/_Layout.cshtml";
     if (Session["User"] == null)
     {
         Layout = "~/Views/Shared/_Layout.cshtml";
-
     }
     else
     {
-
         Layout = "~/Views/Shared/_Layout_login.cshtml";
     }
 }
+
 @using V_Vuelos.Models
 
 <!DOCTYPE html>
@@ -23,52 +21,36 @@
     <title>ComprarVuelosInicio</title>
 </head>
 <body>
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    @foreach (var vuelo in Model)
-                    {
-                        <div class="text-center">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Origen: @vuelo.Pai.NombrePais</h5>
-                                    <h5 class="card-title">Destino: @vuelo.Pai1.NombrePais</h5>
-                                    <p class="card-text">Aerolínea: @vuelo.Aerolinea1.NombreAgencia</p>
-                                    <p class="card-text">Fecha: @ViewBag.Fecha.Date.ToString("d")</p>
-                                    <p class="card-text">Hora: @vuelo.Hora</p>
-                                    <p class="card-text">Precio: 500 US</p>
-                                    <button onclick="disminuir('numero1')">-</button>
-                                    <input type="number" id="numero1" value="0" min="0">
-                                    <button onclick="incrementar('numero1')">+</button><br>
-                                    <a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a>
-
-                                </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                @foreach (var vuelo in Model)
+                {
+                    <div class="text-center">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Origen: @vuelo.Pai.NombrePais</h5>
+                                <h5 class="card-title">Destino: @vuelo.Pai1.NombrePais</h5>
+                                <p class="card-text">Aerolínea: @vuelo.Aerolinea1.NombreAgencia</p>
+                                <p class="card-text">Fecha: @ViewBag.Fecha.Date.ToString("d")</p>
+                                <p class="card-text">Hora: @vuelo.Hora</p>
+                                <p class="card-text" id="precio">Precio: @ViewBag.PrecioAleatorio</p>
+                                <!---<button onclick="disminuir('numero1')">-</button-->
+                                <input type="number" id="numero1" value="0" min="0">
+                                <!--button onclick="incrementar('numero1')">+</!--button><br-->
+                                <!--<a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a-->
+                                <a href="#"
+                                   onclick="
+                                   var cantidad = document.getElementById('numero1').value;
+                                   window.location.href = '@Url.Action("MetodoPago", "Home")?id=@((Session["User"] as Usuario)?.Id_Usuario)&Origen=@vuelo.Pai.NombrePais&Destino=@vuelo.Pai1.NombrePais&Aerolinea=@vuelo.Aerolinea1.NombreAgencia&Fecha=@ViewBag.Fecha.Date.ToString("d")&Hora=@vuelo.Hora&Precio=@ViewBag.PrecioAleatorio&Cantidad=' + cantidad;
+                                   ">Comprar</a>
                             </div>
-                            <br>
                         </div>
-                    }
-
-                </div>
+                        <br>
+                    </div>
+                }
             </div>
         </div>
-
     </div>
-
-    <script>
-        function incrementar(id) {
-            var input = document.getElementById(id);
-            input.value = parseInt(input.value) + 1;
-        }
-
-        function disminuir(id) {
-            var input = document.getElementById(id);
-            if (parseInt(input.value) > 0) {
-                input.value = parseInt(input.value) - 1;
-            }
-        }
-
-
-    </script>
 </body>
 </html>

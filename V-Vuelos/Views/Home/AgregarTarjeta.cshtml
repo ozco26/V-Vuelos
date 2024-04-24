@@ -7,15 +7,104 @@
     {
         Layout = "~/Views/Shared/_Layout_login.cshtml";
     }
-}
 
+    <script>
+        const idUsuario = @(Session["User"] != null ? (Session["User"] as Usuario).Id_Usuario : 0); // Provee un valor predeterminado
+        console.log(idUsuario)
+    </script>
+
+}
+@using V_Vuelos.Models
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Agregar Tarjeta</title>
+    <title>Agregar Tarjeta de Crédito</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <script>
+        async function enviarTarjeta() {
+            const tipoTarjeta = document.getElementById("tipoTarjeta").value;
+            const nombre = document.getElementById("nombre").value;
+            const apellido = document.getElementById("apellido").value;
+            const numeroTarjeta = document.getElementById("numeroTarjeta").value;
+            const mesExpiracion = document.getElementById("mesExpiracion").value;
+            const annoExpiracion = document.getElementById("annoExpiracion").value;
+
+
+            const tarjetaData = {
+                tipoTarjeta: tipoTarjeta,
+                mes_Expiración: parseInt(mesExpiracion),
+                anno_Expiración: parseInt(annoExpiracion),
+                num_Tarjeta: numeroTarjeta,
+                nombre: nombre,
+                apellido: apellido,
+                id_Usuario: idUsuario // Usar el valor asignado desde Razor
+            };
+
+            try {
+                const response = await fetch("http://localhost:5056/api/Values/Agregar-Tarjeta", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tarjetaData)  // Convertir el objeto a JSON
+                    
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert("Tarjeta agregada con éxito");
+                } else {
+                    alert("Error al agregar tarjeta: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error al agregar tarjeta");
+            }
+        }
+    </script>
 </head>
 <body>
-   
+    <div class="container mt-4">
+        <h2>Agregar Tarjeta de Crédito</h2>
+
+        <form onsubmit="enviarTarjeta(); return false;">
+            <!-- Evita el envío tradicional del formulario -->
+            <div class="form-group">
+                <label for="tipoTarjeta">Tipo de Tarjeta</label>
+                <select id="tipoTarjeta" name="tipoTarjeta" class="form-control" required>
+                    <option value="MC">Master Card</option>
+                    <option value="VI">Visa</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre">Nombre del Titular</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="50" />
+            </div>
+
+            <div class="form-group">
+                <label for="apellido">Apellido del Titular</label>
+                <input type="text" class="form-control" id="apellido" required maxlength="50" />
+            </div>
+
+            <div class="form-group">
+                <label para="numeroTarjeta">Número de Tarjeta</label>
+                <input type="text" class="form-control" id="numeroTarjeta" required pattern="\d{16}" title="Debe ser un número de 16 dígitos" />
+            </div>
+
+            <div class="form-group">
+                <label para="mesExpiracion">Mes de Expiración</label>
+                <input type="number" class="form-control" id="mesExpiracion" required min="1" max="12" />
+            </div>
+
+            <div class="form-group">
+                <label para="annoExpiracion">Año de Expiración</label>
+                <input type="number" class="form-control" id="annoExpiracion" required min="2024" max="2034" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Agregar Tarjeta</button>
+        </form>
+    </div>
 </body>
 </html>

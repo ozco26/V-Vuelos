@@ -176,23 +176,37 @@ namespace V_Vuelos.Controllers
         {
             try
             {
-                // Llamar al método para obtener los datos de aerolíneas por país desde la API
-                var vuelos = await GetVuelos(); // Aquí podrías usar los parámetros pais y fecha en tu método GetVuelos
+                // Llamar al método para obtener los datos de vuelos
+                var vuelos = await GetVuelos();
                 vuelos = vuelos.Where(v => v.vuelo == vuelo).ToList();
-                // Pasar los datos a la vista
 
+                // Generar un número aleatorio múltiplo de 50 entre 200 y 700
+                Random random = new Random();
+                int baseValue = random.Next(4, 11); // Para generar valores de 4 a 10
+                int precioAleatorio = baseValue * 50; // Resultados entre 200 y 700
+
+                // Pasar los datos a la vista
+                ViewBag.Vuelos = vuelos;
                 ViewBag.Fecha = fecha; // Pasar la fecha a la vista utilizando ViewBag
+                ViewBag.PrecioAleatorio = precioAleatorio; // Pasar el precio aleatorio
+
                 return View(vuelos);
             }
             catch (Exception ex)
             {
                 // Manejar errores
-                return View("Error", $"Error al obtener los datos de aerolíneas por país: {ex.Message}");
+                return View("Error", $"Error al obtener los datos de vuelos: {ex.Message}");
             }
         }
+
         public ActionResult IniciarSesion()
         {
             return View();
+        }
+
+        public ActionResult AgregarTarjeta()
+        {
+            return View() ;
         }
 
 
@@ -294,62 +308,109 @@ namespace V_Vuelos.Controllers
             return false;
         }
 
-        public ActionResult Pagar()
+        public async Task<ActionResult> Pagar(string usuario, string metodoPago, string bookID, string estado = "En Proceso")
         {
-            return View();
+            // Crear un objeto con los datos a enviar
+            var jsonData = new
+            {
+                usuario = usuario,
+                metodoPago = metodoPago,
+                bookID = bookID,
+                estado = estado
+            };
+
+            // Convertir el objeto a JSON
+            string json = JsonConvert.SerializeObject(jsonData);
+
+            // Definir la URL del servidor API REST
+            string apiUrl = "http://localhost:5056/api/Values/CreateCompra";
+
+            using (var httpClient = new HttpClient())
+            {
+                // Configurar la solicitud POST
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Enviar la solicitud POST al servidor REST
+                var response = await httpClient.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Si la solicitud tuvo éxito, puedes continuar y retornar la vista
+                    return View(); // retorna la vista "Pagar" u otra según el contexto
+                }
+                else
+                {
+                    // Si la solicitud falló, puedes manejar el error y retornar una vista de error
+                    return View("Error", (object)"Error al procesar el pago.");
+                }
+            }
         }
 
-        public async Task<ActionResult> MetodoPago(int ID)
+        public class DatosViaje
         {
+            public string Origen { get; set; }
+            public string Destino { get; set; }
+            public string Aerolinea { get; set; }
+            public string Fecha { get; set; }
+            public string Hora { get; set; }
+            public int nPrecio { get; set; }
+            public int Cantidad { get; set; }
+        }
+
+        public async Task<ActionResult> MetodoPago(int ID, string origen, string destino, string aerolinea, string fecha,
+                                           string hora, int precio, int cantidad)
+        {
+            // Calcular el precio total
+            int nPrecio = precio * cantidad;
+
+            // Crear un objeto con los datos del viaje
+            var datosViaje = new DatosViaje
+            {
+                Origen = origen,
+                Destino = destino,
+                Aerolinea = aerolinea,
+                Fecha = fecha,
+                Hora = hora,
+                nPrecio = nPrecio,
+                Cantidad = cantidad
+            };
+
+            // Asignar el objeto a ViewBag para pasarlo a la vista
+            ViewBag.DatosViaje = datosViaje;
+
             try
             {
-                string ConsultaApi = $"http://localhost:5056/api/Values/Obtener-Tarjetas/{ID}";
+                // Llamar a la API externa para obtener datos relacionados
+                string consultaApi = $"http://localhost:5056/api/Values/Obtener-Tarjetas/{ID}";
 
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetAsync(ConsultaApi);
+                    var response = await client.GetAsync(consultaApi);
 
-                    // Verificar si la solicitud fue exitosa
                     if (response.IsSuccessStatusCode)
                     {
-                        // Leer la respuesta JSON y convertirla en una lista de objetos Aerolinea
+                        // Deserializar el JSON para obtener las tarjetas
                         var json = await response.Content.ReadAsStringAsync();
+                        var tarjetas = JsonConvert.DeserializeObject<List<Tarjeta>>(json);
 
-                        try
-                        {
-                            var Tarjetas = JsonConvert.DeserializeObject<List<Tarjeta>>(json);
-                            Console.WriteLine("Tarjetas: " + Tarjetas.Count);
+                        // Asignar las tarjetas a ViewBag
+                        ViewBag.Tarjetas = tarjetas;
 
-                            ViewBag.Tarjetas = Tarjetas;
-
-                            // Devolver la vista con los datos
-                            return View(ViewBag);
-                        }
-                        catch (JsonReaderException ex)
-                        {
-                            // Manejar la excepción de deserialización JSON
-                            Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
-                            return View("Error", "Error al procesar los datos recibidos.");
-                        }
+                        // Devolver la vista con los datos
+                        return View(); // Devolver la vista correspondiente
                     }
                     else
                     {
-                        // Si la solicitud no fue exitosa, devolver una vista de error
-                        return View("Error");
+                        // Manejar error de solicitud
+                        return View("Error", (object)"Error al obtener datos de la API.");
                     }
                 }
             }
-            catch (HttpRequestException ex)
-            {
-                // Capturar excepción relacionada con la solicitud HTTP
-                Console.WriteLine("Error al realizar la solicitud HTTP: " + ex.Message);
-                return View("Error", ex.Message);
-            }
             catch (Exception ex)
             {
-                // Capturar cualquier otra excepción no especificada
+                // Capturar cualquier excepción y devolver vista de error
                 Console.WriteLine("Error inesperado: " + ex.Message);
-                return View("Error");
+                return View("Error", (object)"Ocurrió un error inesperado.");
             }
         }
 
