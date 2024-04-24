@@ -161,6 +161,7 @@
     <Compile Include="Models\Consecutivo.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DatosViaje.cs" />
     <Compile Include="Models\Errore.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
