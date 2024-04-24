@@ -1,9 +1,7 @@
-﻿
-@{
+﻿@{
     if (Session["User"] == null)
     {
         Layout = "~/Views/Shared/_Layout.cshtml";
-
     }
     else
     {
@@ -12,55 +10,19 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Pagar</title>
+    <script>
+        // Redirigir después de 5 segundos (5000 ms)
+        setTimeout(function () {
+            window.location.href = '/Home/Index'; // Reemplaza con la ruta a la que quieres redirigir
+        }, 5000);
+    </script>
 </head>
 <body>
-    <div class="container">
-        <h2>Resumen de Compra</h2>
-
-        <div class="card mt-4">
-            <div class="card-header">
-                XXXXXXXXXXXX1111
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Visa</h5>
-            </div>
-            <div class="card-footer">
-                Expira: 12/2023
-            </div>
-        </div>
-
-        <div class="card mt-4">
-            <div class="card-body">
-                <h5 class="card-title">Madrid</h5>
-                <p class="card-text">Aerolínea: Iberia</p>
-                <p class="card-text">Fecha: 2024-02-11</p>
-                <p class="card-text">Hora: 09:30</p>
-                <p class="card-text">Precio: 500 US</p>
-                <p class="card-text">Cantidad de Boletos Comprados: 5</p>
-            </div>
-
-        </div>
-
-        <div class="mt-4">
-            <h4>Total a Pagar: <span id="total">2500</span> US</h4>
-        </div>
-        <div>
-            <button class="btn btn-danger" onclick="realizarCompra()">Comprar</button>
-        </div>
-    </div>
-
-    <script>
-    function realizarCompra() {
-        var metodoPago = document.getElementById('tarjeta1').checked ? 'Tarjeta de Crédito' : 'Easy Pay';
-        var total = document.getElementById('total').textContent;
-        alert('Compra realizada:\nMétodo de Pago: ' + metodoPago + '\nTotal: ' + total + ' US');
-    }
-    </script>
-
+    <h1>Gracias por comprar</h1>
+    <p>Será redirigido a la página principal en unos segundos...</p>
 </body>
 </html>

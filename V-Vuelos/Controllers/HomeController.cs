@@ -308,9 +308,42 @@ namespace V_Vuelos.Controllers
             return false;
         }
 
-        public ActionResult Pagar()
+        public async Task<ActionResult> Pagar(string usuario, string metodoPago, string bookID, string estado = "En Proceso")
         {
-            return View();
+            // Crear un objeto con los datos a enviar
+            var jsonData = new
+            {
+                usuario = usuario,
+                metodoPago = metodoPago,
+                bookID = bookID,
+                estado = estado
+            };
+
+            // Convertir el objeto a JSON
+            string json = JsonConvert.SerializeObject(jsonData);
+
+            // Definir la URL del servidor API REST
+            string apiUrl = "http://localhost:5056/api/Values/CreateCompra";
+
+            using (var httpClient = new HttpClient())
+            {
+                // Configurar la solicitud POST
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Enviar la solicitud POST al servidor REST
+                var response = await httpClient.PostAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Si la solicitud tuvo éxito, puedes continuar y retornar la vista
+                    return View(); // retorna la vista "Pagar" u otra según el contexto
+                }
+                else
+                {
+                    // Si la solicitud falló, puedes manejar el error y retornar una vista de error
+                    return View("Error", (object)"Error al procesar el pago.");
+                }
+            }
         }
 
         public class DatosViaje

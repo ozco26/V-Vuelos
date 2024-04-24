@@ -35,10 +35,10 @@
                                 <p class="card-text">Fecha: @ViewBag.Fecha.Date.ToString("d")</p>
                                 <p class="card-text">Hora: @vuelo.Hora</p>
                                 <p class="card-text" id="precio">Precio: @ViewBag.PrecioAleatorio</p>
-                                <button onclick="disminuir('numero1')">-</button>
+                                <!---<button onclick="disminuir('numero1')">-</button-->
                                 <input type="number" id="numero1" value="0" min="0">
-                                <button onclick="incrementar('numero1')">+</button><br>
-                                <a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a>
+                                <!--button onclick="incrementar('numero1')">+</!--button><br-->
+                                <!--<a href="@Url.Action("MetodoPago", "Home", new { id = (Session["User"] as Usuario)?.Id_Usuario })">Comprar</a-->
                                 <a href="#"
                                    onclick="
                                    var cantidad = document.getElementById('numero1').value;
